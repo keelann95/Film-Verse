@@ -10,7 +10,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="bg-transparent shadow-lg shadow-gray-400 p-5 flex justify-between items-center">
+    <div className="bg-transparent p-5 flex justify-between items-center">
       <img
         className="w-48 md:w-72"
         src="https://see.fontimg.com/api/rf5/ZpJmK/ZWM1MTI5YzZkYjVlNGVmYTkzYTBjMjE3ODNmYTM0ZTcub3Rm/RmlsbSBWZXJzZQ/wood-carving.png?r=fs&h=81&w=1000&fg=FFFFFF&bg=353D4B&tb=1&s=81"
@@ -28,7 +28,7 @@ const Navbar = () => {
           <CiSearch />
         </div>
         <button className="border p-2 rounded-md px-4 py-2" type="button">Sign up</button>
-        <button className="bg-green-500 p-2 rounded-md px-4 py-2 text-white" type="button">Log in</button>
+        <button className="bg-[#03A737] p-2 rounded-md px-4 py-2 text-white" type="button">Log in</button>
       </div>
       <div className="md:hidden text-2xl" onClick={toggleMenu}>
         {isOpen ? <AiOutlineClose /> : <AiOutlineMenu />}
