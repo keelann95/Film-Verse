@@ -4,12 +4,21 @@ import Signup from './Signup'
 
 
 const App = () => {
+  const [isLogin, setIsLogin] = useState(true);
+
+  const toggleForm = () => {
+      setIsLogin(!isLogin);
+  };
+
   return (
-    <div>
-      <h1> brenda</h1>
-      <h2> Tunechi</h2>
-    </div>
-  )
-}
+      <div>
+          {isLogin ? (
+              <Login onSwitch={toggleForm} />
+          ) : (
+              <Signup onSwitch={toggleForm} />
+          )}
+      </div>
+  );
+};
 
 export default App
