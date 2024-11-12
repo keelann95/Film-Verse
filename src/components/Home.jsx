@@ -3,6 +3,7 @@ import Navbar from './Navbar';
 import { FaPlayCircle } from "react-icons/fa";
 import { CiBookmark } from "react-icons/ci";
 import { Center } from '@react-three/drei';
+import Footer from './Footer';
 
 const Home = () => {
     const images = [
@@ -946,7 +947,8 @@ const Home = () => {
 </section>
 </div>
 
-<div className="bg-gradient-to-br from-black via-zinc-900 to-slate-700 min-h-[70vh] text-white">
+<section className=' p-4 pl-16'>
+<div className="bg-gradient-to-br from-black via-zinc-900 to-slate-900 min-h-[70vh] text-white">
       <div className="flex justify-between px-8 py-4">
         <div className="flex items-center gap-2">
           <span className="text-xl font-medium text-gray-200">Movies On Awards</span>
@@ -1036,8 +1038,13 @@ const Home = () => {
         </div>
       </div>
     </div>
+    </section>
 
       </main>
+
+      <div className=' p-5 '>
+        <Footer />
+      </div>
     </>
   );
 };
