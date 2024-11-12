@@ -215,7 +215,6 @@ const Tracker = () => {
 <header className=' p-8 w pl-16 text-2xl font-semibold '>Just Releases</header>
 <section className=' p-8 pl-5 '>
   <div className=' rounded-xl flex  overflow-auto  w-[90vw] '>
-  {/* Horizontally Scrollable Poster Section */}
   <div className="  hover:scale-90 hover:duration-[0.5s] space-x-4 p-2 translate-x-4">
       {poster.map((img, index) => (
         <div key={index} className="w-64 h-80 rounded-lg overflow-hidden flex-shrink-0">
@@ -226,7 +225,6 @@ const Tracker = () => {
             alt="poster"
           />
 
-          {/* Poster Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg">
             <div className="absolute bottom-4 left-4 text-white">
               <h1 className="text-xl font-semibold font-serif">Enola Holmes 2</h1>
