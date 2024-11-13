@@ -10,7 +10,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="bg-transparent p-5 flex justify-between items-center">
+    <div className="bg-transparent p-2  flex justify-between text-center align-middle object-center items-center">
       <img
         className="w-48 md:w-72"
         src="https://see.fontimg.com/api/rf5/ZpJmK/ZWM1MTI5YzZkYjVlNGVmYTkzYTBjMjE3ODNmYTM0ZTcub3Rm/RmlsbSBWZXJzZQ/wood-carving.png?r=fs&h=81&w=1000&fg=FFFFFF&bg=353D4B&tb=1&s=81"

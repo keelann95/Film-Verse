@@ -3,7 +3,9 @@ import Navbar from './Navbar';
 import { FaPlayCircle } from "react-icons/fa";
 import { CiBookmark } from "react-icons/ci";
 import { Center } from '@react-three/drei';
+import { BookmarkIcon } from "lucide-react";
 import Footer from './Footer';
+import { useState, useEffect } from 'react';
 
 const Home = () => {
     const images = [
@@ -65,67 +67,113 @@ const Home = () => {
           pg: "PG-13"
         }
       ];
+      const [currentSlide, setCurrentSlide] = useState(0);
+
+      const movies = [
+        {
+          title: "Star Wars: The Force Awakens",
+          duration: "2h40m",
+          year: "2022",
+          genres: ["Fantasy", "Action"],
+          description: "Star Wars is an American epic space opera media franchise created by George Lucas, which began with the eponymous 1977 film and quickly became a worldwide pop culture phenomenon.",
+          backgroundImage: "https://intheposter.com/cdn/shop/products/the-frightening-in-the-poster-1_1600x.jpg?v=1694762497"
+        },
+        {
+          title: "Avengers: Infinity War",
+          duration: "2h29m",
+          year: "2018",
+          genres: ["Action", "Adventure"],
+          description: "The Avengers must stop Thanos, an intergalactic warlord, from getting his hands on all the infinity stones. However, Thanos is prepared to go to any lengths to carry out his insane plan.",
+          backgroundImage: "https://cdn.textstudio.com/output/studio/template/preview/stamped/0/z/c/c/t7vccz0.webp"
+        },
+        {
+          title: "The Dark Knight",
+          duration: "2h32m",
+          year: "2008",
+          genres: ["Action", "Crime", "Drama"],
+          description: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+          backgroundImage: "https://i.ebayimg.com/images/g/4wwAAOSwk3RmDMNy/s-l1200.jpg"
+        }
+      ];
+    
+      useEffect(() => {
+        const timer = setInterval(() => {
+          setCurrentSlide((prev) => (prev + 1) % movies.length);
+        }, 5000);
+        return () => clearInterval(timer);
+      }, []);
+    
+      const currentMovie = movies[currentSlide];
     
   return (
     <>
       <main className=' p-5'>
-        <section
-          className="relative  w-full h-[80vh]"
-          style={{
-            backgroundImage: "url(https://www.komar.de/media/catalog/product/cache/5/image/9df78eab33525d08d6e5fb8d27136e95/4/-/4-4126_avengers_infinity_war_movie_poster_web.jpg)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            zIndex: 0,
-          }}
-        >
-          <div className="absolute inset-0 bg-black opacity-40 z-10"></div>
-          <div
-            className="absolute inset-0"
-            style={{
-              background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0.3) 70%, rgba(0, 0, 0, 8))",
-              zIndex: 10,
-            }}
-          ></div>
-          <div className="relative z-50">
-            <Navbar />
-          </div>
-          <div className=' relative z-20 transform translate-y-72 pl-16'>
-            <div>
-                <h1 className=' text-[#fff] text-5xl font-serif'>Star Wars: The Force Awaken</h1>
-                <div className=" pt-3 text-gray-400  flex  space-x-2">
-  <h3>2h40m</h3>
-  <span className="mx-1 inline-block align-middle ">-</span>
-  <h3>2022</h3>
-  <span className="mx-1 inline-block align-middle">-</span>
-  <h3>Fantasy</h3>
-  <span className="mx-1 inline-block align-middle">-</span>
-  <h3>Action</h3>
-</div>
- 
- <p className=' pt-3 text-gray-200 text-lg font-serif'>
- Star Wars is an American epic space opera media franchise created <br /> by George Lucas, which began with the eponymous 1977 film and  quickly <br /> became a worldwide pop culture phenomenon.
- </p>
-<div className=' flex justify-between'>
-   <div className=" pt-9 flex items-center">
-  <button className="flex items-center bg-[#03A737] text-white rounded-md  px-4 py-2">
-    <FaPlayCircle className="mr-2" /> Watch Now
-  </button>
-  <button className="flex items-center bg-transparent text-white px-4 py-2 border rounded-md hover:bg-gray-500 ml-4">
-    <CiBookmark className="mr-2" /> Add Watchlist
-  </button>
-</div>
- 
- <div className="flex translate-y-14     space-x-1 pr-6pt-4">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="bg-gray-500 w-2.5 h-2.5 rounded-full"></div>
-        ))}
+      <div className=' w-full absolute z-10'>
+        <Navbar />
       </div>
-</div>
- 
+      <section
+      className="relative w-full h-[80vh]"
+      style={{
+        backgroundImage: `url(${currentMovie.backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        zIndex: 0,
+        transition: "background-image 0.5s ease-in-out"
+      }}
+    >
+      <div className="absolute inset-0 bg-black opacity-10 z-10"></div>
+      <div
+        className="absolute inset-0"
+        style={{
+          background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0.3) 70%, rgba(0, 0, 0, 8))",
+          zIndex: 10,
+        }}
+      ></div>
+      
+      <div className="relative z-20 transform translate-y-72 pl-16">
+        <div>
+          <h1 className="text-[#fff] text-5xl font-serif">{currentMovie.title}</h1>
+          <div className="pt-3 text-gray-400 flex space-x-2">
+            <h3>{currentMovie.duration}</h3>
+            <span className="mx-1 inline-block align-middle">-</span>
+            <h3>{currentMovie.year}</h3>
+            {currentMovie.genres.map((genre, index) => (
+              <React.Fragment key={genre}>
+                <span className="mx-1 inline-block align-middle">-</span>
+                <h3>{genre}</h3>
+              </React.Fragment>
+            ))}
+          </div>
+
+          <p className="pt-3 text-gray-200 text-lg font-serif">
+            {currentMovie.description}
+          </p>
+
+          <div className="flex justify-between">
+            <div className="pt-9 flex items-center">
+              <button className="flex items-center bg-[#03A737] text-white rounded-md px-4 py-2">
+                <FaPlayCircle className="mr-2" /> Watch Now
+              </button>
+              <button className="flex items-center bg-transparent text-white px-4 py-2 border rounded-md hover:bg-gray-500 ml-4">
+                <BookmarkIcon className="mr-2" /> Add Watchlist
+              </button>
             </div>
 
+            <div className="flex translate-y-14 space-x-1 pr-6">
+              {movies.map((_, index) => (
+                <div
+                  key={index}
+                  className={`w-2.5 h-2.5 rounded-full ${
+                    index === currentSlide ? "bg-white" : "bg-gray-500"
+                  }`}
+                  onClick={() => setCurrentSlide(index)}
+                />
+              ))}
+            </div>
           </div>
-        </section>
+        </div>
+      </div>
+    </section>
         
 <section>
 <div className="flex justify-center items-center space-x-14 gap-20  pt-14 my-4 overflow-auto scroll-smooth pb-8">
