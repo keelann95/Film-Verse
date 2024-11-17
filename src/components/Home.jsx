@@ -8,6 +8,16 @@ import Footer from './Footer';
 import { useState, useEffect } from 'react';
 
 const Home = () => {
+
+    const [userData, setuserData] = useState(null)
+
+    useEffect(() => {
+      fetch('https://api.themoviedb.org/3/tv/popular?language=en-US&page={i}')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        
+            })},[])
     const images = [
         "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Marvel_Studios_logo.svg/2560px-Marvel_Studios_logo.svg.png",
         "https://images.ctfassets.net/y2ske730sjqp/1aONibCke6niZhgPxuiilC/2c401b05a07288746ddf3bd3943fbc76/BrandAssets_Logos_01-Wordmark.jpg?w=940" ,
@@ -108,9 +118,7 @@ const Home = () => {
   return (
     <>
       <main className=' p-5'>
-      <div className=' w-full absolute z-10'>
-        <Navbar />
-      </div>
+     
       <section
       className="relative w-full h-[80vh]"
       style={{
@@ -121,6 +129,9 @@ const Home = () => {
         transition: "background-image 0.5s ease-in-out"
       }}
     >
+       <div className=' w-full absolute z-50'>
+        <Navbar />
+      </div>
       <div className="absolute inset-0 bg-black opacity-10 z-10"></div>
       <div
         className="absolute inset-0"
