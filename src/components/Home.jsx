@@ -6,18 +6,61 @@ import { Center } from '@react-three/drei';
 import { BookmarkIcon } from "lucide-react";
 import Footer from './Footer';
 import { useState, useEffect } from 'react';
+import { data } from 'autoprefixer';
 
 const Home = () => {
+  const [featuredMovies, setFeaturedMovies] = useState([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-    const [userData, setuserData] = useState(null)
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await fetch('https://movie-website-backend-chi.vercel.app/movies');
+        const data = await response.json();
+        const transformedMovies = data.map(movie => ({
+          title: movie.title,
+          duration: movie.duration || "Unknown",
+          year: movie.year || "Unknown",
+          genres: movie.genres || [],
+          description: movie.description || "No description available",
+          backgroundImage: movie.thumbnail || "/api/placeholder/1920/1080",
+        }));
+        setFeaturedMovies(transformedMovies);
+      } catch (error) {
+        console.error("Error fetching movies:", error);
+        // default movies in case of error
+        setFeaturedMovies([{
+          title: "Default Movie",
+          duration: "2h 30m",
+          year: "2024",
+          genres: ["Action", "Drama"],
+          description: "Failed to load movie description.",
+          backgroundImage: "/api/placeholder/1920/1080",
+        }]);
+      }
+    };
 
-    useEffect(() => {
-      fetch('https://api.themoviedb.org/3/tv/popular?language=en-US&page={i}')
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        
-            })},[])
+    fetchMovies();
+  }, []);
+
+  useEffect(() => {
+    if (featuredMovies.length === 0) return;
+    
+    const timer = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % featuredMovies.length);
+    }, 5000);
+    
+    return () => clearInterval(timer);
+  }, [featuredMovies.length]);
+
+  const currentMovie = featuredMovies[currentSlide] || {
+    title: "Loading...",
+    duration: "...",
+    year: "...",
+    genres: [],
+    description: "Loading movie information...",
+    backgroundImage: "/api/placeholder/1920/1080",
+  };
     const images = [
         "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Marvel_Studios_logo.svg/2560px-Marvel_Studios_logo.svg.png",
         "https://images.ctfassets.net/y2ske730sjqp/1aONibCke6niZhgPxuiilC/2c401b05a07288746ddf3bd3943fbc76/BrandAssets_Logos_01-Wordmark.jpg?w=940" ,
@@ -33,7 +76,7 @@ const Home = () => {
 
       ]
 
-      const featuredMovies = [
+      const staticFeaturedMovies = [
         {
           title: "Oppenheimer",
           rating: "4.9",
@@ -77,44 +120,7 @@ const Home = () => {
           pg: "PG-13"
         }
       ];
-      const [currentSlide, setCurrentSlide] = useState(0);
-
-      const movies = [
-        {
-          title: "Star Wars: The Force Awakens",
-          duration: "2h40m",
-          year: "2022",
-          genres: ["Fantasy", "Action"],
-          description: "Star Wars is an American epic space opera media franchise created by George Lucas, which began with the eponymous 1977 film and quickly became a worldwide pop culture phenomenon.",
-          backgroundImage: "https://intheposter.com/cdn/shop/products/the-frightening-in-the-poster-1_1600x.jpg?v=1694762497"
-        },
-        {
-          title: "Avengers: Infinity War",
-          duration: "2h29m",
-          year: "2018",
-          genres: ["Action", "Adventure"],
-          description: "The Avengers must stop Thanos, an intergalactic warlord, from getting his hands on all the infinity stones. However, Thanos is prepared to go to any lengths to carry out his insane plan.",
-          backgroundImage: "https://cdn.textstudio.com/output/studio/template/preview/stamped/0/z/c/c/t7vccz0.webp"
-        },
-        {
-          title: "The Dark Knight",
-          duration: "2h32m",
-          year: "2008",
-          genres: ["Action", "Crime", "Drama"],
-          description: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-          backgroundImage: "https://i.ebayimg.com/images/g/4wwAAOSwk3RmDMNy/s-l1200.jpg"
-        }
-      ];
-    
-      useEffect(() => {
-        const timer = setInterval(() => {
-          setCurrentSlide((prev) => (prev + 1) % movies.length);
-        }, 5000);
-        return () => clearInterval(timer);
-      }, []);
-    
-      const currentMovie = movies[currentSlide];
-    
+     
   return (
     <>
       <main className=' p-5'>
@@ -171,7 +177,7 @@ const Home = () => {
             </div>
 
             <div className="flex translate-y-14 space-x-1 pr-6">
-              {movies.map((_, index) => (
+              {featuredMovies.map((_, index) => (
                 <div
                   key={index}
                   className={`w-2.5 h-2.5 rounded-full ${
@@ -229,357 +235,6 @@ const Home = () => {
   </div>
 </div>
 
-<div className=' pl-3'>
-  <div className='w-64 h-80 rounded-lg'>
-    {poster.map((img, hey) => (
-      <div key={hey} className='relative w-full h-full rounded-lg overflow-hidden'>
-        <img
-          style={{ opacity: 1, zIndex: -1 }}
-          className='rounded-lg w-full h-full object-cover'
-          src={img}
-          alt="poster"
-        />
-
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg'>
-          <div className='absolute bottom-4 left-4 text-white'>
-            <h1 className='text-xl font-semibold font-serif'>Enola Holmes 2</h1>
-            <div className='flex items-center text-gray-400 gap-2 font-semibold'>
-              <span>⭐</span>
-              <span>4.8</span>
-              <span>|</span>
-              <span>Action</span>
-              <span>|</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-<div className=' pl-3'>
-  <div className='w-64 h-80 rounded-lg'>
-    {poster.map((img, hey) => (
-      <div key={hey} className='relative w-full h-full rounded-lg overflow-hidden'>
-        <img
-          style={{ opacity: 1, zIndex: -1 }}
-          className='rounded-lg w-full h-full object-cover'
-          src={img}
-          alt="poster"
-        />
-
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg'>
-          <div className='absolute bottom-4 left-4 text-white'>
-            <h1 className='text-xl font-semibold font-serif'>Enola Holmes 2</h1>
-            <div className='flex items-center text-gray-400 gap-2 font-semibold'>
-              <span>⭐</span>
-              <span>4.8</span>
-              <span>|</span>
-              <span>Action</span>
-              <span>|</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-<div className=' pl-3'>
-  <div className='w-64 h-80 rounded-lg'>
-    {poster.map((img, hey) => (
-      <div key={hey} className='relative w-full h-full rounded-lg overflow-hidden'>
-        <img
-          style={{ opacity: 1, zIndex: -1 }}
-          className='rounded-lg w-full h-full object-cover'
-          src={img}
-          alt="poster"
-        />
-
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg'>
-          <div className='absolute bottom-4 left-4 text-white'>
-            <h1 className='text-xl font-semibold font-serif'>Enola Holmes 2</h1>
-            <div className='flex items-center text-gray-400 gap-2 font-semibold'>
-              <span>⭐</span>
-              <span>4.8</span>
-              <span>|</span>
-              <span>Action</span>
-              <span>|</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-<div className=' pl-3'>
-  <div className='w-64 h-80 rounded-lg'>
-    {poster.map((img, hey) => (
-      <div key={hey} className='relative w-full h-full rounded-lg overflow-hidden'>
-        <img
-          style={{ opacity: 1, zIndex: -1 }}
-          className='rounded-lg w-full h-full object-cover'
-          src={img}
-          alt="poster"
-        />
-
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg'>
-          <div className='absolute bottom-4 left-4 text-white'>
-            <h1 className='text-xl font-semibold font-serif'>Enola Holmes 2</h1>
-            <div className='flex items-center text-gray-400 gap-2 font-semibold'>
-              <span>⭐</span>
-              <span>4.8</span>
-              <span>|</span>
-              <span>Action</span>
-              <span>|</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-<div className=' pl-3'>
-  <div className='w-64 h-80 rounded-lg'>
-    {poster.map((img, hey) => (
-      <div key={hey} className='relative w-full h-full rounded-lg overflow-hidden'>
-        <img
-          style={{ opacity: 1, zIndex: -1 }}
-          className='rounded-lg w-full h-full object-cover'
-          src={img}
-          alt="poster"
-        />
-
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg'>
-          <div className='absolute bottom-4 left-4 text-white'>
-            <h1 className='text-xl font-semibold font-serif'>Enola Holmes 2</h1>
-            <div className='flex items-center text-gray-400 gap-2 font-semibold'>
-              <span>⭐</span>
-              <span>4.8</span>
-              <span>|</span>
-              <span>Action</span>
-              <span>|</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-<div className=' pl-3'>
-  <div className='w-64 h-80 rounded-lg'>
-    {poster.map((img, hey) => (
-      <div key={hey} className='relative w-full h-full rounded-lg overflow-hidden'>
-        <img
-          style={{ opacity: 1, zIndex: -1 }}
-          className='rounded-lg w-full h-full object-cover'
-          src={img}
-          alt="poster"
-        />
-
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg'>
-          <div className='absolute bottom-4 left-4 text-white'>
-            <h1 className='text-xl font-semibold font-serif'>Enola Holmes 2</h1>
-            <div className='flex items-center text-gray-400 gap-2 font-semibold'>
-              <span>⭐</span>
-              <span>4.8</span>
-              <span>|</span>
-              <span>Action</span>
-              <span>|</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-<div className=' pl-3'>
-  <div className='w-64 h-80 rounded-lg'>
-    {poster.map((img, hey) => (
-      <div key={hey} className='relative w-full h-full rounded-lg overflow-hidden'>
-        <img
-          style={{ opacity: 1, zIndex: -1 }}
-          className='rounded-lg w-full h-full object-cover'
-          src={img}
-          alt="poster"
-        />
-
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg'>
-          <div className='absolute bottom-4 left-4 text-white'>
-            <h1 className='text-xl font-semibold font-serif'>Enola Holmes 2</h1>
-            <div className='flex items-center text-gray-400 gap-2 font-semibold'>
-              <span>⭐</span>
-              <span>4.8</span>
-              <span>|</span>
-              <span>Action</span>
-              <span>|</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-<div className=' pl-3'>
-  <div className='w-64 h-80 rounded-lg'>
-    {poster.map((img, hey) => (
-      <div key={hey} className='relative w-full h-full rounded-lg overflow-hidden'>
-        <img
-          style={{ opacity: 1, zIndex: -1 }}
-          className='rounded-lg w-full h-full object-cover'
-          src={img}
-          alt="poster"
-        />
-
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg'>
-          <div className='absolute bottom-4 left-4 text-white'>
-            <h1 className='text-xl font-semibold font-serif'>Enola Holmes 2</h1>
-            <div className='flex items-center text-gray-400 gap-2 font-semibold'>
-              <span>⭐</span>
-              <span>4.8</span>
-              <span>|</span>
-              <span>Action</span>
-              <span>|</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-<div className=' pl-3'>
-  <div className='w-64 h-80 rounded-lg'>
-    {poster.map((img, hey) => (
-      <div key={hey} className='relative w-full h-full rounded-lg overflow-hidden'>
-        <img
-          style={{ opacity: 1, zIndex: -1 }}
-          className='rounded-lg w-full h-full object-cover'
-          src={img}
-          alt="poster"
-        />
-
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg'>
-          <div className='absolute bottom-4 left-4 text-white'>
-            <h1 className='text-xl font-semibold font-serif'>Enola Holmes 2</h1>
-            <div className='flex items-center text-gray-400 gap-2 font-semibold'>
-              <span>⭐</span>
-              <span>4.8</span>
-              <span>|</span>
-              <span>Action</span>
-              <span>|</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-<div className=' pl-3'>
-  <div className='w-64 h-80 rounded-lg'>
-    {poster.map((img, hey) => (
-      <div key={hey} className='relative w-full h-full rounded-lg overflow-hidden'>
-        <img
-          style={{ opacity: 1, zIndex: -1 }}
-          className='rounded-lg w-full h-full object-cover'
-          src={img}
-          alt="poster"
-        />
-
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg'>
-          <div className='absolute bottom-4 left-4 text-white'>
-            <h1 className='text-xl font-semibold font-serif'>Enola Holmes 2</h1>
-            <div className='flex items-center text-gray-400 gap-2 font-semibold'>
-              <span>⭐</span>
-              <span>4.8</span>
-              <span>|</span>
-              <span>Action</span>
-              <span>|</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-<div className=' pl-3'>
-  <div className='w-64 h-80 rounded-lg'>
-    {poster.map((img, hey) => (
-      <div key={hey} className='relative w-full h-full rounded-lg overflow-hidden'>
-        <img
-          style={{ opacity: 1, zIndex: -1 }}
-          className='rounded-lg w-full h-full object-cover'
-          src={img}
-          alt="poster"
-        />
-
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg'>
-          <div className='absolute bottom-4 left-4 text-white'>
-            <h1 className='text-xl font-semibold font-serif'>Enola Holmes 2</h1>
-            <div className='flex items-center text-gray-400 gap-2 font-semibold'>
-              <span>⭐</span>
-              <span>4.8</span>
-              <span>|</span>
-              <span>Action</span>
-              <span>|</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-<div className=' pl-3'>
-  <div className='w-64 h-80 rounded-lg'>
-    {poster.map((img, hey) => (
-      <div key={hey} className='relative w-full h-full rounded-lg overflow-hidden'>
-        <img
-          style={{ opacity: 1, zIndex: -1 }}
-          className='rounded-lg w-full h-full object-cover'
-          src={img}
-          alt="poster"
-        />
-
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg'>
-          <div className='absolute bottom-4 left-4 text-white'>
-            <h1 className='text-xl font-semibold font-serif'>Enola Holmes 2</h1>
-            <div className='flex items-center text-gray-400 gap-2 font-semibold'>
-              <span>⭐</span>
-              <span>4.8</span>
-              <span>|</span>
-              <span>Action</span>
-              <span>|</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-<div className=' pl-3'>
-  <div className='w-64 h-80 rounded-lg'>
-    {poster.map((img, hey) => (
-      <div key={hey} className='relative w-full h-full rounded-lg overflow-hidden'>
-        <img
-          style={{ opacity: 1, zIndex: -1 }}
-          className='rounded-lg w-full h-full object-cover'
-          src={img}
-          alt="poster"
-        />
-
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg'>
-          <div className='absolute bottom-4 left-4 text-white'>
-            <h1 className='text-xl font-semibold font-serif'>Enola Holmes 2</h1>
-            <div className='flex items-center text-gray-400 gap-2 font-semibold'>
-              <span>⭐</span>
-              <span>4.8</span>
-              <span>|</span>
-              <span>Action</span>
-              <span>|</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
 
       
 </section>
@@ -588,231 +243,6 @@ const Home = () => {
 <section className=' p-8 pl-16 '>
     <div className=' flex overflow-auto'>
     <div className=' flex gap-3 '>
-    <div className=' flex shadow-sm shadow-gray-600 p-2 w-[350px] rounded-2xl '>
-        <div className=' '>
-            <div className=' flex'>
-                <span className=' pt-16 p-4 font-bold text-3xl'>
-                    1
-                </span>
-                <div className=' flex'>
-                    <img className=' rounded-2xl  h-[20vh] w-[120px]' src="https://m.media-amazon.com/images/I/71OHH9HaB5S._AC_UF1000,1000_QL80_.jpg" alt="" />
-                    <div className=' p-4 space-y-1'>
-                        <h4 className=' border w-14 p-1 border-dashed rounded-xl'>PG-13</h4>
-                        <h1 className=' text-xl font-serif'>The Last Of Us</h1>
-                        <p><div className=' flex font-serif text-sm text-gray-600 gap-1'>
-                        <span className=' text-sm '>🎬</span>
-                        <h1>Horror</h1>
-                            <span>|</span>
-                            <h1>Thriller</h1>
-                        </div></p>
-                         <div className=' flex gap-1 font-serif text-gray-300 text-sm'>
-                         <span>⭐</span>
-                         <h1>4.3</h1>
-                            <span>|</span>
-                            <h1>Movie</h1>  
-                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div className=' flex shadow-sm shadow-gray-600 p-2 w-[350px] rounded-2xl '>
-        <div className=' '>
-            <div className=' flex'>
-                <span className=' pt-16 p-4 font-bold text-3xl'>
-                    1
-                </span>
-                <div className=' flex'>
-                    <img className=' rounded-2xl  h-[20vh] w-[120px]' src="https://m.media-amazon.com/images/I/71OHH9HaB5S._AC_UF1000,1000_QL80_.jpg" alt="" />
-                    <div className=' p-4 space-y-1'>
-                        <h4 className=' border w-14 p-1 border-dashed rounded-xl'>PG-13</h4>
-                        <h1 className=' text-xl font-serif'>The Last Of Us</h1>
-                        <p><div className=' flex font-serif text-sm text-gray-600 gap-1'>
-                        <span className=' text-sm '>🎬</span>
-                        <h1>Horror</h1>
-                            <span>|</span>
-                            <h1>Thriller</h1>
-                        </div></p>
-                         <div className=' flex gap-1 font-serif text-gray-300 text-sm'>
-                         <span>⭐</span>
-                         <h1>4.3</h1>
-                            <span>|</span>
-                            <h1>Movie</h1>  
-                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div className=' flex shadow-sm shadow-gray-600 p-2 w-[350px] rounded-2xl '>
-        <div className=' '>
-            <div className=' flex'>
-                <span className=' pt-16 p-4 font-bold text-3xl'>
-                    1
-                </span>
-                <div className=' flex'>
-                    <img className=' rounded-2xl  h-[20vh] w-[120px]' src="https://m.media-amazon.com/images/I/71OHH9HaB5S._AC_UF1000,1000_QL80_.jpg" alt="" />
-                    <div className=' p-4 space-y-1'>
-                        <h4 className=' border w-14 p-1 border-dashed rounded-xl'>PG-13</h4>
-                        <h1 className=' text-xl font-serif'>The Last Of Us</h1>
-                        <p><div className=' flex font-serif text-sm text-gray-600 gap-1'>
-                        <span className=' text-sm '>🎬</span>
-                        <h1>Horror</h1>
-                            <span>|</span>
-                            <h1>Thriller</h1>
-                        </div></p>
-                         <div className=' flex gap-1 font-serif text-gray-300 text-sm'>
-                         <span>⭐</span>
-                         <h1>4.3</h1>
-                            <span>|</span>
-                            <h1>Movie</h1>  
-                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div className=' flex shadow-sm shadow-gray-600 p-2 w-[350px] rounded-2xl '>
-        <div className=' '>
-            <div className=' flex'>
-                <span className=' pt-16 p-4 font-bold text-3xl'>
-                    1
-                </span>
-                <div className=' flex'>
-                    <img className=' rounded-2xl  h-[20vh] w-[120px]' src="https://m.media-amazon.com/images/I/71OHH9HaB5S._AC_UF1000,1000_QL80_.jpg" alt="" />
-                    <div className=' p-4 space-y-1'>
-                        <h4 className=' border w-14 p-1 border-dashed rounded-xl'>PG-13</h4>
-                        <h1 className=' text-xl font-serif'>The Last Of Us</h1>
-                        <p><div className=' flex font-serif text-sm text-gray-600 gap-1'>
-                        <span className=' text-sm '>🎬</span>
-                        <h1>Horror</h1>
-                            <span>|</span>
-                            <h1>Thriller</h1>
-                        </div></p>
-                         <div className=' flex gap-1 font-serif text-gray-300 text-sm'>
-                         <span>⭐</span>
-                         <h1>4.3</h1>
-                            <span>|</span>
-                            <h1>Movie</h1>  
-                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div className=' flex shadow-sm shadow-gray-600 p-2 w-[350px] rounded-2xl '>
-        <div className=' '>
-            <div className=' flex'>
-                <span className=' pt-16 p-4 font-bold text-3xl'>
-                    1
-                </span>
-                <div className=' flex'>
-                    <img className=' rounded-2xl  h-[20vh] w-[120px]' src="https://m.media-amazon.com/images/I/71OHH9HaB5S._AC_UF1000,1000_QL80_.jpg" alt="" />
-                    <div className=' p-4 space-y-1'>
-                        <h4 className=' border w-14 p-1 border-dashed rounded-xl'>PG-13</h4>
-                        <h1 className=' text-xl font-serif'>The Last Of Us</h1>
-                        <p><div className=' flex font-serif text-sm text-gray-600 gap-1'>
-                        <span className=' text-sm '>🎬</span>
-                        <h1>Horror</h1>
-                            <span>|</span>
-                            <h1>Thriller</h1>
-                        </div></p>
-                         <div className=' flex gap-1 font-serif text-gray-300 text-sm'>
-                         <span>⭐</span>
-                         <h1>4.3</h1>
-                            <span>|</span>
-                            <h1>Movie</h1>  
-                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div className=' flex shadow-sm shadow-gray-600 p-2 w-[350px] rounded-2xl '>
-        <div className=' '>
-            <div className=' flex'>
-                <span className=' pt-16 p-4 font-bold text-3xl'>
-                    1
-                </span>
-                <div className=' flex'>
-                    <img className=' rounded-2xl  h-[20vh] w-[120px]' src="https://m.media-amazon.com/images/I/71OHH9HaB5S._AC_UF1000,1000_QL80_.jpg" alt="" />
-                    <div className=' p-4 space-y-1'>
-                        <h4 className=' border w-14 p-1 border-dashed rounded-xl'>PG-13</h4>
-                        <h1 className=' text-xl font-serif'>The Last Of Us</h1>
-                        <p><div className=' flex font-serif text-sm text-gray-600 gap-1'>
-                        <span className=' text-sm '>🎬</span>
-                        <h1>Horror</h1>
-                            <span>|</span>
-                            <h1>Thriller</h1>
-                        </div></p>
-                         <div className=' flex gap-1 font-serif text-gray-300 text-sm'>
-                         <span>⭐</span>
-                         <h1>4.3</h1>
-                            <span>|</span>
-                            <h1>Movie</h1>  
-                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div className=' flex shadow-sm shadow-gray-600 p-2 w-[350px] rounded-2xl '>
-        <div className=' '>
-            <div className=' flex'>
-                <span className=' pt-16 p-4 font-bold text-3xl'>
-                    1
-                </span>
-                <div className=' flex'>
-                    <img className=' rounded-2xl  h-[20vh] w-[120px]' src="https://m.media-amazon.com/images/I/71OHH9HaB5S._AC_UF1000,1000_QL80_.jpg" alt="" />
-                    <div className=' p-4 space-y-1'>
-                        <h4 className=' border w-14 p-1 border-dashed rounded-xl'>PG-13</h4>
-                        <h1 className=' text-xl font-serif'>The Last Of Us</h1>
-                        <p><div className=' flex font-serif text-sm text-gray-600 gap-1'>
-                        <span className=' text-sm '>🎬</span>
-                        <h1>Horror</h1>
-                            <span>|</span>
-                            <h1>Thriller</h1>
-                        </div></p>
-                         <div className=' flex gap-1 font-serif text-gray-300 text-sm'>
-                         <span>⭐</span>
-                         <h1>4.3</h1>
-                            <span>|</span>
-                            <h1>Movie</h1>  
-                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div className=' flex shadow-sm shadow-gray-600 p-2 w-[350px] rounded-2xl '>
-        <div className=' '>
-            <div className=' flex'>
-                <span className=' pt-16 p-4 font-bold text-3xl'>
-                    1
-                </span>
-                <div className=' flex'>
-                    <img className=' rounded-2xl  h-[20vh] w-[120px]' src="https://m.media-amazon.com/images/I/71OHH9HaB5S._AC_UF1000,1000_QL80_.jpg" alt="" />
-                    <div className=' p-4 space-y-1'>
-                        <h4 className=' border w-14 p-1 border-dashed rounded-xl'>PG-13</h4>
-                        <h1 className=' text-xl font-serif'>The Last Of Us</h1>
-                        <p><div className=' flex font-serif text-sm text-gray-600 gap-1'>
-                        <span className=' text-sm '>🎬</span>
-                        <h1>Horror</h1>
-                            <span>|</span>
-                            <h1>Thriller</h1>
-                        </div></p>
-                         <div className=' flex gap-1 font-serif text-gray-300 text-sm'>
-                         <span>⭐</span>
-                         <h1>4.3</h1>
-                            <span>|</span>
-                            <h1>Movie</h1>  
-                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div className=' flex shadow-sm shadow-gray-600 p-2 w-[350px] rounded-2xl '>
         <div className=' '>
             <div className=' flex'>
