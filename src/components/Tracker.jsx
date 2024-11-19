@@ -4,7 +4,6 @@ import { CiBookmark } from "react-icons/ci";
 import Navbar from './Navbar';
 import { useEffect, useState } from 'react';
 import Footer from './Footer';
-
 const Tracker = () => {
 
      const [playbackTime, setPlaybackTime] = useState(0); 

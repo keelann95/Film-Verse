@@ -1,42 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import { FaPlayCircle } from "react-icons/fa";
-import { CiBookmark } from "react-icons/ci";
-import { Center } from '@react-three/drei';
 import { BookmarkIcon } from "lucide-react";
 import Footer from './Footer';
-import { useState, useEffect } from 'react';
-import { data } from 'autoprefixer';
+import { CiBookmark } from 'react-icons/ci';
+import { Link } from 'react-router-dom';
+
 
 const Home = () => {
   const [featuredMovies, setFeaturedMovies] = useState([]);
+  const [popularMovies, setPopularMovies] = useState([]);
+  const [upcomingMovies, setUpcomingMovies] = useState([]);
+  const [moviesOnAwards, setMoviesOnAwards] = useState([]);
+  const [popularMoviesList, setPopularMoviesList] = useState([]);
+  const [moreMoviesToDisplay, setMoreMoviesToDisplay] = useState([]);
+  const [popularMoviesToDisplay, setPopularMoviesToDisplay] = useState([]);
+  const [topRatedTVSeries, setTopRatedTVSeries] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
-
+  const limit = 10;
+  const skip = 10;
+  
+  
   useEffect(() => {
+    
     const fetchMovies = async () => {
       try {
-        const response = await fetch('https://movie-website-backend-chi.vercel.app/movies');
+        const response = await fetch('https://film-verse-backend.onrender.com/trending');
         const data = await response.json();
-        const transformedMovies = data.map(movie => ({
-          title: movie.title,
-          duration: movie.duration || "Unknown",
-          year: movie.year || "Unknown",
-          genres: movie.genres || [],
-          description: movie.description || "No description available",
-          backgroundImage: movie.thumbnail || "/api/placeholder/1920/1080",
+        
+        const transformedMovies = data.map((movie) => ({
+          movie_name: movie.movie_name,
+          runtime: movie.runtime || "Unknown",
+          release_date: movie.release_date || "Unknown",
+          genres: movie.name || [],
+          overview: movie.overview || "No description available",
+          backgroundImage: movie.movie_picture || "/api/placeholder/1920/1080",
         }));
-        setFeaturedMovies(transformedMovies);
+
+        const limitedAndSkippedMovies = transformedMovies.slice(skip, skip + limit);
+        setFeaturedMovies(limitedAndSkippedMovies);
       } catch (error) {
         console.error("Error fetching movies:", error);
-        // default movies in case of error
-        setFeaturedMovies([{
-          title: "Default Movie",
-          duration: "2h 30m",
-          year: "2024",
-          genres: ["Action", "Drama"],
-          description: "Failed to load movie description.",
-          backgroundImage: "/api/placeholder/1920/1080",
-        }]);
       }
     };
 
@@ -45,235 +49,350 @@ const Home = () => {
 
   useEffect(() => {
     if (featuredMovies.length === 0) return;
-    
+  
     const timer = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % featuredMovies.length);
+      setCurrentSlide((prev) => (prev + 1) % featuredMovies.length);
     }, 5000);
-    
+  
     return () => clearInterval(timer);
   }, [featuredMovies.length]);
 
   const currentMovie = featuredMovies[currentSlide] || {
-    title: "Loading...",
-    duration: "...",
-    year: "...",
+    movie_name: "Loading...",
+    runtime: "...",
+    release_date: "...",
     genres: [],
-    description: "Loading movie information...",
+    overview: "Loading movie information...",
     backgroundImage: "/api/placeholder/1920/1080",
   };
-    const images = [
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Marvel_Studios_logo.svg/2560px-Marvel_Studios_logo.svg.png",
-        "https://images.ctfassets.net/y2ske730sjqp/1aONibCke6niZhgPxuiilC/2c401b05a07288746ddf3bd3943fbc76/BrandAssets_Logos_01-Wordmark.jpg?w=940" ,
-        "https://seeklogo.com/images/D/disney-logo-9649A88458-seeklogo.com.png",
-        "https://static.wikia.nocookie.net/hbo-max/images/6/6a/HBOMax.png/revision/latest/thumbnail/width/360/height/360?cb=20201009195251",
-        "https://i.ytimg.com/vi/50rAKjuTXbc/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGD4gUihyMA8=&rs=AOn4CLCTUx2eDWJoYrC22grOGoUhqpq7Aw",
-        "https://www.citypng.com/public/uploads/preview/hd-white-star-wars-logo-png-701751694787021te08lp5kwd.png",
-        "https://seeklogo.com/images/N/national-geographic-channel-logo-DCE048FFC0-seeklogo.com.png",
-      ];
-       
-      const poster = [
-        "https://preview.redd.it/what-has-happened-to-movie-posters-v0-tm2y16wnnhb81.jpg?width=640&crop=smart&auto=webp&s=2f1305986475f9787ba4dd2ca1486abdb206a377",
 
-      ]
+  
+  useEffect(() => {
+    const fetchPopularMovies = async () => {
+      try {
+        const response = await fetch('https://film-verse-backend.onrender.com/popular');
+        const data = await response.json();
+  
+        const transformedPopularMovies = data.map((movie) => ({
+          movie_name: movie.movie_name,
+          runtime: movie.runtime || "Unknown",
+          release_date: movie.release_date || "Unknown",
+          genres: movie.name || [],
+          overview: movie.overview || "No description available",
+          backgroundImage: movie.movie_picture || "/api/placeholder/1920/1080",
+        }));
+  
+        const limitedAndSkippedPopularMovies = transformedPopularMovies.slice(skip, skip + limit);
+        setPopularMovies(limitedAndSkippedPopularMovies); // Set popular movies in the state
+      } catch (error) {
+        console.error("Error fetching popular movies:", error);
+      }
+    };
+  
+    fetchPopularMovies();
+  }, []);
+  
+  useEffect(() => {
+    const fetchUpcomingMovies = async () => {
+      try {
+        const response = await fetch('https://film-verse-backend.onrender.com/upcoming');
+        const data = await response.json();
+  
+        const transformedUpcomingMovies = data.map((movie) => ({
+          movie_name: movie.movie_name,
+          rating: movie.rating || "N/A",
+          genres: movie.name || [],
+          posterImage: movie.movie_picture || "/api/placeholder/1920/1080",
+        }));
+  
+        const limitedAndSkippedUpcomingMovies = transformedUpcomingMovies.slice(skip, skip + limit);
+        setUpcomingMovies(limitedAndSkippedUpcomingMovies); // Set upcoming movies in state
+      } catch (error) {
+        console.error("Error fetching upcoming movies:", error);
+      }
+    };
+  
+    fetchUpcomingMovies();
+  }, []);
+  
+  useEffect(() => {
+    const fetchPopularMovies = async () => {
+      try {
+        const response = await fetch('https://film-verse-backend.onrender.com/popular');
+        const movieData = await response.json();
+  
+        const formattedMovies = movieData.map((movie) => ({
+          title: movie.movie_name,
+          rating: movie.rating || "N/A",
+          categories: movie.name || [],
+          posterUrl: movie.movie_picture || "/api/placeholder/1920/1080",
+        }));
+  
+        const moviesToDisplay = formattedMovies.slice(50, 70); 
+        setPopularMoviesList(moviesToDisplay); 
+      } catch (error) {
+        console.error("Error fetching popular movies:", error);
+      }
+    };
+  
+    fetchPopularMovies();
+  }, []);
+  
+  useEffect(() => {
+    const fetchFeaturedMovies = async () => {
+      try {
+        const response = await fetch('https://film-verse-backend.onrender.com/popular');
+        const moviesData = await response.json();
+  
+        const formattedMovies = moviesData.map((movie) => ({
+          title: movie.movie_name,
+          rating: movie.rating || "N/A",
+          genres: movie.name || [],
+          posterUrl: movie.movie_picture || "/api/placeholder/1920/1080",
+        }));
+  
+        // Skip the first 72 movies and limit to the next 40
+        const moviesToDisplay = formattedMovies.slice(72, 112); // Skip 72 and limit the next 40
+        setPopularMoviesToDisplay(moviesToDisplay); // Store in state
+      } catch (error) {
+        console.error("Error fetching featured movies:", error);
+      }
+    };
+  
+    fetchFeaturedMovies();
+  }, []);
+  
+  useEffect(() => {
+    const fetchMoreMovies = async () => {
+      try {
+        const response = await fetch('https://film-verse-backend.onrender.com/popular');
+        const movieData = await response.json();
+  
+        const formattedMovies = movieData.map((movie) => ({
+          title: movie.movie_name,
+          rating: movie.rating || "N/A",
+          genres: movie.name || [],
+          posterUrl: movie.movie_picture || "/api/placeholder/1920/1080",
+        }));
+  
+        // Skip the first 115 movies and limit the next 40
+        const moviesToDisplay = formattedMovies.slice(115, 155); // Skip 115 and limit to next 40
+        setMoreMoviesToDisplay(moviesToDisplay); // Store in state
+      } catch (error) {
+        console.error("Error fetching more movies:", error);
+      }
+    };
+  
+    fetchMoreMovies();
+  }, []);
 
-      const staticFeaturedMovies = [
-        {
-          title: "Oppenheimer",
-          rating: "4.9",
-          type: "Comedy • Action",
-          image: "https://i2.wp.com/www.shutterstock.com/blog/wp-content/uploads/sites/5/2024/03/Beekeeper-poster.jpg?ssl=1",
-          pg: "PG-13"
-        },
-        {
-          title: "The End Movie",
-          rating: "4.8",
-          type: "Comedy • Action",
-          image: "https://i.pinimg.com/564x/3c/b1/9b/3cb19b81b335250c77ac874f45ec5da0.jpg",
-          pg: "PG-13"
-        },
-        {
-          title: "The Flash",
-          rating: "4.4",
-          type: "Comedy • Action",
-          image: "https://marketplace.canva.com/EAFVOC6TAng/1/0/1131w/canva-yellow-and-white-action-movie-poster-_GG58WASM1E.jpg",
-          pg: "PG-13"
-        },
-        {
-          title: "Fall",
-          rating: "4.4",
-          type: "Comedy • Action",
-          image: "https://themarketingbirds.com/wp-content/uploads/2021/04/nysm2-official-quad-scaled.jpg",
-          pg: "PG-13"
-        },
-        {
-          title: "Black Adam",
-          rating: "4.6",
-          type: "Comedy • Action",
-          image: "https://marketplace.canva.com/EAFVCFkAg3w/1/0/1131w/canva-red-and-black-horror-movie-poster-AOBSIAmLWOs.jpg",
-          pg: "PG-13"
-        },
-        {
-          title: "Idemity",
-          rating: "4.4",
-          type: "Comedy • Action",
-          image: "https://www.nextdayflyers.com/blog/wp-content/uploads/2012/02/drive.jpg",
-          pg: "PG-13"
-        }
-      ];
-     
+  useEffect(() => {
+    const fetchTopRatedTVSeries = async () => {
+      try {
+        const response = await fetch('https://film-verse-backend.onrender.com/top_rated_tv_series');
+        const tvSeriesData = await response.json();
+  
+        const formattedSeries = tvSeriesData.map((series) => ({
+          title: series.series_name,
+          rating: series.rating || "N/A",
+          genres: series.name || [],
+          posterUrl: series.movie_picture || "/api/placeholder/1920/1080",
+        }));
+  
+        setTopRatedTVSeries(formattedSeries); // Store in state
+      } catch (error) {
+        console.error("Error fetching top-rated TV series:", error);
+      }
+    };
+  
+    fetchTopRatedTVSeries();
+  }, []);
+  
+  
+  useEffect(() => {
+    const fetchMoviesOnAwards = async () => {
+      try {
+        const response = await fetch("https://film-verse-backend.onrender.com/trending");
+        const moviesResponseData = await response.json();
+
+        const filteredMovies = moviesResponseData.slice(100, 200);
+
+        const formattedMoviesData = filteredMovies.map((movie) => ({
+          title: movie.movie_name || "Unknown Title",
+          rating: movie.rating || "N/A",
+          genres: movie.name ? movie.name.join(", ") : "Unknown",
+          posterUrl: movie.movie_picture || "/api/placeholder/1920/1080",
+          parentalGuidance: movie.pg || "N/A",
+        }));
+
+        setMoviesOnAwards(formattedMoviesData);
+      } catch (error) {
+        console.error("Error fetching movies on awards:", error);
+      }
+    };
+
+    fetchMoviesOnAwards();
+  }, []);
+
+
   return (
     <>
-      <main className=' p-5'>
-     
-      <section
-      className="relative w-full h-[80vh]"
-      style={{
-        backgroundImage: `url(${currentMovie.backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        zIndex: 0,
-        transition: "background-image 0.5s ease-in-out"
-      }}
-    >
-       <div className=' w-full absolute z-50'>
-        <Navbar />
-      </div>
-      <div className="absolute inset-0 bg-black opacity-10 z-10"></div>
-      <div
-        className="absolute inset-0"
-        style={{
-          background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0.3) 70%, rgba(0, 0, 0, 8))",
-          zIndex: 10,
-        }}
-      ></div>
-      
-      <div className="relative z-20 transform translate-y-72 pl-16">
-        <div>
-          <h1 className="text-[#fff] text-5xl font-serif">{currentMovie.title}</h1>
-          <div className="pt-3 text-gray-400 flex space-x-2">
-            <h3>{currentMovie.duration}</h3>
-            <span className="mx-1 inline-block align-middle">-</span>
-            <h3>{currentMovie.year}</h3>
-            {currentMovie.genres.map((genre, index) => (
-              <React.Fragment key={genre}>
-                <span className="mx-1 inline-block align-middle">-</span>
-                <h3>{genre}</h3>
-              </React.Fragment>
-            ))}
+      <main className='p-2 md:p-5'>
+        
+        <section 
+          className="relative h-[50vh] md:h-[80vh] w-full overflow-hidden" 
+          style={{
+            backgroundImage: `url(${currentMovie.backgroundImage})`,  
+            backgroundSize: "cover",  
+            backgroundPosition: "center",  
+            backgroundRepeat: "no-repeat", 
+            zIndex: 0,
+            transition: "background-image 0.5s ease-in-out",
+          }}
+        >
+          <div className="w-full absolute z-50">
+            <Navbar />
           </div>
 
-          <p className="pt-3 text-gray-200 text-lg font-serif">
-            {currentMovie.description}
-          </p>
+          <div className="absolute inset-0 bg-black opacity-10 z-0"></div>
+          <div 
+            className="absolute inset-0" 
+            style={{
+              background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0.3) 70%, rgba(0, 0, 0, 8))",
+              zIndex: 10,
+            }}
+          ></div>
 
-          <div className="flex justify-between">
-            <div className="pt-9 flex items-center">
-              <button className="flex items-center bg-[#03A737] text-white rounded-md px-4 py-2">
-                <FaPlayCircle className="mr-2" /> Watch Now
-              </button>
-              <button className="flex items-center bg-transparent text-white px-4 py-2 border rounded-md hover:bg-gray-500 ml-4">
-                <BookmarkIcon className="mr-2" /> Add Watchlist
-              </button>
+          <div className="relative z-20 px-4 sm:px-6 md:px-16 flex items-end h-full pb-10">
+            <div className="max-w-2xl">
+              <h1 className="text-[#fff] text-2xl sm:text-4xl md:text-5xl font-serif line-clamp-2">{currentMovie.movie_name}</h1>
+
+              <div className="pt-3 text-gray-400 flex flex-wrap items-center space-x-2 text-sm sm:text-base">
+                <h3>{currentMovie.runtime}</h3>
+                <span className="mx-1 inline-block align-middle">-</span>
+                <h3>{currentMovie.release_date}</h3>
+                {currentMovie.genres.map((genre, index) => (
+                  <React.Fragment key={index}>
+                    <span className="mx-1 inline-block align-middle">-</span>
+                    <h3>{genre}</h3>
+                  </React.Fragment>
+                ))}
+              </div>
+
+              <p className="pt-3 text-gray-200 text-sm md:text-lg font-serif line-clamp-3">{currentMovie.overview}</p>
+
+              <div className="flex flex-col sm:flex-row gap-4 mt-5 items-start sm:items-center">
+                <div className="flex items-center gap-4">
+                  <button className="flex items-center bg-[#03A737] text-white rounded-md px-3 py-2 text-sm sm:text-base">
+                    <FaPlayCircle className="mr-2" /> Watch Now
+                  </button>
+                  <button className="flex items-center bg-transparent text-white px-3 py-2 text-sm sm:text-base border rounded-md hover:bg-gray-500">
+                    <BookmarkIcon className="mr-2" /> Add Watchlist
+                  </button>
+                </div>
+
+                <div className="flex space-x-1.5 mt-4 sm:mt-0 sm:ml-auto">
+                  {featuredMovies.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`w-2 h-2 rounded-full cursor-pointer ${index === currentSlide ? "bg-white" : "bg-gray-500"}`}
+                      onClick={() => setCurrentSlide(index)}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
+          </div>
+        </section>
 
-            <div className="flex translate-y-14 space-x-1 pr-6">
-              {featuredMovies.map((_, index) => (
-                <div
-                  key={index}
-                  className={`w-2.5 h-2.5 rounded-full ${
-                    index === currentSlide ? "bg-white" : "bg-gray-500"
-                  }`}
-                  onClick={() => setCurrentSlide(index)}
-                />
-              ))}
+        <header className="p-4 sm:p-8 text-2xl font-semibold pl-4 sm:pl-16">Just Released</header>
+        <section className="flex overflow-x-auto space-x-4 px-4 sm:px-16 pb-4 scrollbar-hide">
+  {upcomingMovies.map((movie, index) => (
+    <Link 
+      to={`/movie/${movie.id || index}`}  // Ensure correct `id` or fallback to index
+      key={movie.id || index} 
+      className="flex-shrink-0"
+    >
+      <div className="w-64 sm:w-72 md:w-80 lg:w-96 h-64 sm:h-80 rounded-lg overflow-hidden">
+        <div className="relative w-full h-full rounded-lg overflow-hidden">
+          <img
+            className="rounded-lg w-full h-full object-cover"
+            src={movie.posterImage || "/api/placeholder/400/600"}
+            alt={movie.movie_name || "Movie Poster"}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg">
+            <div className="absolute bottom-4 left-4 text-white">
+              <h1 className="text-lg sm:text-xl font-semibold font-serif">
+                {movie.movie_name || "Untitled Movie"}
+              </h1>
+              <div className="flex items-center text-gray-400 gap-2 text-sm">
+                <span>⭐</span>
+                <span>{movie.rating || "N/A"}</span>
+                <span>|</span>
+                {movie.genres && movie.genres.length > 0 ? (
+                  movie.genres.map((genre, i) => (
+                    <span key={i}>
+                      {genre}
+                      {i < movie.genres.length - 1 && ' | '}
+                    </span>
+                  ))
+                ) : (
+                  <span>No Genres</span>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
-        
-<section>
-<div className="flex justify-center items-center space-x-14 gap-20  pt-14 my-4 overflow-auto scroll-smooth pb-8">
-      {images.map((image, index) => (
-        <img
-          key={index}
-          src={image}
-          alt={`Image ${index + 1}`}
-          className="h-14 w-auto  shadow-sm shadow-white " 
-        />
-      ))}
-    </div>
+    </Link>
+  ))}
 </section>
 
-<header className=' p-8 w pl-16 text-2xl font-semibold '>Just Releases</header>
-<section className=' flex overflow-auto  p-8 pl-16'>
-    <div >
-  <div className='w-64 h-80 rounded-lg'>
-    {poster.map((img, hey) => (
-      <div key={hey} className='relative w-full h-full rounded-lg overflow-hidden'>
-        <img
-          style={{ opacity: 1, zIndex: -1 }}
-          className='rounded-lg w-full h-full object-cover'
-          src={img}
-          alt="poster"
-        />
-
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg'>
-          <div className='absolute bottom-4 left-4 text-white'>
-            <h1 className='text-xl font-semibold font-serif'>Enola Holmes 2</h1>
-            <div className='flex items-center text-gray-400 gap-2 font-semibold'>
-              <span>⭐</span>
-              <span>4.8</span>
-              <span>|</span>
-              <span>Action</span>
-              <span>|</span>
+        <header className="p-4 sm:p-8 text-2xl font-semibold pl-4 sm:pl-16">Popular of the Week</header>
+        <section className="px-4 sm:px-16">
+  <div className="flex overflow-x-auto space-x-4 pb-4 scrollbar-hide">
+    {popularMovies.map((movie, index) => (
+      <div 
+        key={index} 
+        className="flex-shrink-0 shadow-sm shadow-gray-600 p-2 w-[300px] sm:w-[350px] md:w-[400px] rounded-2xl"
+      >
+        <div className="flex flex-col sm:flex-row">
+          <span className="hidden sm:block pt-16 p-4 font-bold text-3xl">{index + 1}</span>
+          <div className="flex flex-col sm:flex-row">
+            <img
+              className="rounded-2xl h-[20vh] w-[120px] object-cover"
+              src={movie.backgroundImage}
+              alt={movie.movie_name}
+            />
+            <div className="p-4 space-y-1">
+              <h4 className="border w-14 p-1 border-dashed rounded-xl text-sm">PG-13</h4>
+              <h1 className="text-xl font-serif line-clamp-2">{movie.movie_name}</h1>
+              <div className="flex font-serif text-sm text-gray-600 gap-1 flex-wrap">
+                <span className="text-sm">🎬</span>
+                {movie.genres.map((genre, i) => (
+                  <span key={i} className="flex items-center">
+                    <h1>{genre}</h1>
+                    {i < movie.genres.length - 1 && <span className="mx-1">|</span>}
+                  </span>
+                ))}
+              </div>
+              <div className="flex gap-1 font-serif text-gray-300 text-sm">
+                <span>⭐</span>
+                <h1>{movie.runtime}</h1>
+                <span>|</span>
+                <h1>{movie.release_date}</h1>
+              </div>
+              <div className="pt-4">
+                <button className="flex items-center bg-[#03A737] text-white rounded-md px-4 py-2 text-sm">
+                  <FaPlayCircle className="mr-2" /> Watch Now
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     ))}
   </div>
-</div>
-
-
-      
-</section>
-
-<header className=' p-8 w pl-16 text-2xl font-semibold '>Popular of the week</header>
-<section className=' p-8 pl-16 '>
-    <div className=' flex overflow-auto'>
-    <div className=' flex gap-3 '>
-    <div className=' flex shadow-sm shadow-gray-600 p-2 w-[350px] rounded-2xl '>
-        <div className=' '>
-            <div className=' flex'>
-                <span className=' pt-16 p-4 font-bold text-3xl'>
-                    1
-                </span>
-                <div className=' flex'>
-                    <img className=' rounded-2xl  h-[20vh] w-[120px]' src="https://m.media-amazon.com/images/I/71OHH9HaB5S._AC_UF1000,1000_QL80_.jpg" alt="" />
-                    <div className=' p-4 space-y-1'>
-                        <h4 className=' border w-14 p-1 border-dashed rounded-xl'>PG-13</h4>
-                        <h1 className=' text-xl font-serif'>The Last Of Us</h1>
-                        <p><div className=' flex font-serif text-sm text-gray-600 gap-1'>
-                        <span className=' text-sm '>🎬</span>
-                        <h1>Horror</h1>
-                            <span>|</span>
-                            <h1>Thriller</h1>
-                        </div></p>
-                         <div className=' flex gap-1 font-serif text-gray-300 text-sm'>
-                         <span>⭐</span>
-                         <h1>4.3</h1>
-                            <span>|</span>
-                            <h1>Movie</h1>  
-                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    </div>
-    </div>
 </section>
 
 <section
@@ -323,219 +442,224 @@ const Home = () => {
       </div>
     </div>
 
-  <div className=' rounded-xl flex translate-x-6 overflow-auto  w-[90vw] '>
+    <div className='rounded-xl overflow-auto  w-[90vw] '>
   {/* Horizontally Scrollable Poster Section */}
-  <div className="  hover:scale-90 hover:duration-[0.5s] space-x-4 p-2 translate-x-4">
-      {poster.map((img, index) => (
-        <div key={index} className="w-64 h-80 rounded-lg overflow-hidden flex-shrink-0">
-          <img
-            style={{ opacity: 1, zIndex: -1 }}
-            className="rounded-lg w-full h-full object-cover"
-            src={img}
-            alt="poster"
-          />
+  <div className=" flex translate-x-6  space-x-4 p-2 ">
+    {popularMoviesList.map((movie, index) => (
+      <div key={index} className="w-64 h-80 rounded-lg overflow-hidden flex-shrink-0 relative">
+        <img
+          style={{ opacity: 1, zIndex: -1 }}
+          className="rounded-lg w-full h-full object-cover"
+          src={movie.posterUrl}
+          alt={movie.title}
+        />
 
-          {/* Poster Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg">
-            <div className="absolute bottom-4 left-4 text-white">
-              <h1 className="text-xl font-semibold font-serif">Enola Holmes 2</h1>
-              <div className="flex items-center text-gray-400 gap-2 font-semibold">
+        {/* Poster Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg">
+          <div className="absolute bottom-4 left-4 text-white">
+            <h1 className="text-xl font-semibold font-serif">{movie.title}</h1>
+            <div className="flex items-center text-gray-400 gap-2 font-semibold">
+              <span>⭐</span>
+              <span>{movie.rating}</span>
+              <span>|</span>
+              {movie.categories.map((category, i) => (
+                <span key={i}>{category}{i < movie.categories.length - 1 && ' | '}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+
+  </div>
+</section>
+
+
+<header className=' p-8 w pl-16 text-2xl font-semibold '>Movies</header>
+<div className="p-2">
+  <section className="p-8 pl-16">
+    <div className="flex gap-4 overflow-auto">
+      {popularMoviesToDisplay.map((movie, index) => (
+        <div key={index} className="w-[17vw] p-2">
+          <div className="w-[30vw] ">
+            <img
+              className="object-center object-cover rounded-2xl h-[20vh] w-[17vw]"
+              src={movie.posterUrl}
+              alt={movie.title}
+            />
+            <div className="p-4 space-y-1">
+              <h1 className="text-2xl font-serif">{movie.title}</h1>
+              <div className="flex gap-2 font-serif text-gray-300 text-md">
                 <span>⭐</span>
-                <span>4.8</span>
+                <h1>{movie.rating}</h1>
                 <span>|</span>
-                <span>Action</span>
-                <span>|</span>
+                <h1>{movie.genres.join(", ")}</h1>
               </div>
             </div>
           </div>
         </div>
       ))}
-      
     </div>
-
-  </div>
-  </div>
-</section>
-
-<header className=' p-8 w pl-16 text-2xl font-semibold '>Movies</header>
-<div className=' p-2'>
-<section className='  p-8 pl-16 '>
-
-  <div className=' flex gap-4 overflow-auto ' >
-  <div className=' w-[17vw] p-2'>
-    <div className=' w-[30vw] bg-w '>
-                    <img className=' object-center object-cover rounded-2xl  h-[20vh] w-[17vw]' src="https://m.media-amazon.com/images/I/71OHH9HaB5S._AC_UF1000,1000_QL80_.jpg" alt="" />
-                    <div className=' p-4 space-y-1'>
-                        <h1 className=' text-2xl font-serif '>The Last Of Us</h1>
-                       
-                         <div className=' flex gap-2 font-serif text-gray-300 text-md'>
-                         <span>⭐</span>
-                         <h1>4.3</h1>
-                            <span>|</span>
-                            <h1>Movie</h1>  
-                         </div>
-                    </div>
-                </div>
-    </div>    
-
-   
-  </div>
-</section>
+  </section>
 </div>
+
+
 <header className=' p-8 w pl-16 text-2xl font-semibold '>Series</header>
-
-<div className=' p-2'>
-<section className='  p-8 pl-16 '>
-
-  <div className=' flex gap-4 overflow-auto ' >
-  <div className=' w-[17vw] p-2'>
-    <div className=' w-[30vw] bg-w '>
-                    <img className=' object-center object-cover rounded-2xl  h-[20vh] w-[17vw]' src="https://preview.redd.it/what-has-happened-to-movie-posters-v0-ujfww6wnnhb81.jpg?width=1000&format=pjpg&auto=webp&s=73af141c8cc8dad6989a41ec7b576d01a69360f5" alt="" />
-                    <div className=' p-4 space-y-1'>
-                        <h1 className=' text-2xl font-serif '> war on mars</h1>
-                       
-                         <div className=' flex gap-2 font-serif text-gray-300 text-md'>
-                         <span>⭐</span>
-                         <h1>4.3</h1>
-                            <span>|</span>
-                            <h1>Movie</h1>  
-                         </div>
-                    </div>
-                </div>
-    </div>    
-
-   
-  </div>
-</section>
-</div>
-
-<header className=' p-8 w pl-16 text-2xl font-semibold '> Korean Series</header>
-
-<div className=' p-2'>
-<section className='  p-8 pl-16 '>
-
-  <div className=' flex gap-4 overflow-auto ' >
-  <div className=' w-[17vw] p-2'>
-    <div className=' w-[30vw] bg-w '>
-                    <img className=' object-center object-cover rounded-2xl  h-[20vh] w-[17vw]' src="https://assets.mubicdn.net/images/notebook/post_images/31857/images-w1400.jpg?1607290863" alt="" />
-                    <div className=' p-4 space-y-1'>
-                        <h1 className=' text-2xl font-serif '> Korean Wars</h1>
-                       
-                         <div className=' flex gap-2 font-serif text-gray-300 text-md'>
-                         <span>⭐</span>
-                         <h1>4.3</h1>
-                            <span>|</span>
-                            <h1>Movie</h1>  
-                         </div>
-                    </div>
-                </div>
-    </div>    
-
-   
-  </div>
-</section>
-</div>
-
-<section className=' p-4 pl-16'>
-<div className="bg-gradient-to-br from-black via-zinc-900 to-slate-900 min-h-[70vh] text-white">
-      <div className="flex justify-between px-8 py-4">
-        <div className="flex items-center gap-2">
-          <span className="text-xl font-medium text-gray-200">Movies On Awards</span>
-          <div className="flex gap-1">
-            <button className="text-gray-400">&lt;</button>
-            <button className="text-gray-400">&gt;</button>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xl text-gray-200">Fast</span>
-          <div className="flex gap-1">
-            <button className="text-gray-400">&lt;</button>
-            <button className="text-gray-400">&gt;</button>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xl text-gray-200">Live</span>
-          <div className="flex gap-1">
-            <button className="text-gray-400">&lt;</button>
-            <button className="text-gray-400">&gt;</button>
-          </div>
-        </div>
-      </div>
-
-      <div className="px-8">
-        <div className="flex gap-6">
-          <div className="w-[40%]">
-            <div className="relative rounded-lg overflow-hidden h-[400px]">
-              <img 
-                src="https://i0.wp.com/www.indesignskills.com/wp-content/uploads/2022/06/The-Batman-2.jpg?resize=850%2C1259&ssl=1" 
-                alt="Gundala"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
-                <h2 className="text-2xl font-bold">Gundala</h2>
-                <div className="flex items-center gap-2 text-sm text-gray-300 mt-1">
-                  <span className="text-yellow-400">⭐ 4.6</span>
-                  <span>|</span>
-                  <span>2h46m</span>
-                  <span>-</span>
-                  <span>2022</span>
-                  <span>-</span>
-                  <span>Superhero • Actions</span>
-                </div>
-                <p className="mt-2 text-sm text-gray-300">
-                  When international arms dealer and criminal mastermind Elena Federova orchestrates seven...
-                </p>
-                <div className="flex gap-4 mt-4">
-                  <button className="flex items-center gap-2 bg-green-600 px-4 py-2 rounded-md">
-                    <FaPlayCircle /> Play Now
-                  </button>
-                  <button className="flex items-center gap-2 border border-white/20 px-4 py-2 rounded-md">
-                    <CiBookmark /> Add Watchlist
-                  </button>
-                </div>
+<div className="p-2">
+  <section className="p-8 pl-16">
+    <div className="flex  gap-8 overflow-auto">
+      {moreMoviesToDisplay.map((movie, index) => (
+        <div key={index} className="w-[17vw] p-2">
+          <div className="w-[17vw]">
+            <img
+              className="object-center object-cover rounded-2xl h-[20vh] w-[17vw]"
+              src={movie.posterUrl}
+              alt={movie.title}
+            />
+            <div className="p-4 space-y-1">
+              <h1 className="text-2xl font-serif">{movie.title}</h1>
+              <div className="flex gap-2 font-serif text-gray-300 text-md">
+                <span>⭐</span>
+                <h1>{movie.rating}</h1>
+                <span>|</span>
+                <h1>{movie.genres.join(", ")}</h1>
               </div>
             </div>
           </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</div>
 
-          <div className="w-[60%] grid grid-cols-3 gap-4">
-            {featuredMovies.map((movie, index) => (
-              <div key={index} className="relative">
-                <div className="relative rounded-lg overflow-hidden">
-                  <img 
-                    src={movie.image} 
-                    alt={movie.title}
-                    className="w-full h-[180px] object-cover"
-                  />
-                  <div className="absolute top-2 right-2">
-                    <span className="bg-black/50 px-2 py-1 text-xs rounded">
-                      {movie.pg}
-                    </span>
+
+<header className=' p-8 w pl-16 text-2xl font-semibold '> Korean Series</header>
+<div className="p-2">
+  <section className="p-8 pl-16">
+    <div className="flex gap-4 overflow-auto">
+      {topRatedTVSeries.map((series, index) => (
+        <div key={index} className="w-[17vw] p-2">
+          <div className="w-[30vw]">
+            <img
+              className="object-center object-cover rounded-2xl h-[20vh] w-[17vw]"
+              src={series.posterUrl}
+              alt={series.title}
+            />
+            <div className="p-4 space-y-1">
+              <h1 className="text-2xl font-serif">{series.title}</h1>
+              <div className="flex gap-2 font-serif text-gray-300 text-md">
+                <span>⭐</span>
+                <h1>{series.rating}</h1>
+                <span>|</span>
+                <h1>{series.genres.join(", ")}</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</div>
+
+<section className="p-4 pl-16">
+      <div className="bg-gradient-to-br  from-black via-zinc-900 to-slate-900 min-h-[70vh] text-white">
+        <div className="flex justify-between  px-8 py-4">
+          <div className="flex items-center  gap-2">
+            <span className="text-xl font-medium text-gray-200">Movies On Awards</span>
+            <div className="flex gap-1">
+              <button className="text-gray-400">&lt;</button>
+              <button className="text-gray-400">&gt;</button>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xl text-gray-200">Fast</span>
+            <div className="flex gap-1">
+              <button className="text-gray-400">&lt;</button>
+              <button className="text-gray-400">&gt;</button>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xl text-gray-200">Live</span>
+            <div className="flex gap-1">
+              <button className="text-gray-400">&lt;</button>
+              <button className="text-gray-400">&gt;</button>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-8 ">
+          <div className="flex gap-6 ">
+            <div className="w-[40%] ">
+              <div className="relative rounded-lg overflow-hidden h-[400px]">
+                <img
+                  src="https://i0.wp.com/www.indesignskills.com/wp-content/uploads/2022/06/The-Batman-2.jpg?resize=850%2C1259&ssl=1"
+                  alt="Gundala"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute  bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+                  <h2 className="text-2xl  font-bold">Gundala</h2>
+                  <div className="flex  items-center gap-2 text-sm text-gray-300 mt-1">
+                    <span className="text-yellow-400">⭐ 4.6</span>
+                    <span>|</span>
+                    <span>2h46m</span>
+                    <span>-</span>
+                    <span>2022</span>
+                    <span>-</span>
+                    <span>Superhero • Actions</span>
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black to-transparent">
-                    <h3 className="font-medium">{movie.title}</h3>
-                    <div className="flex items-center text-sm text-gray-400 mt-1">
-                      <span className="text-yellow-400">⭐</span>
-                      <span>{movie.rating}</span>
-                      <span className="mx-2">•</span>
-                      <span>{movie.type}</span>
-                    </div>
+                  <p className="mt-2 text-sm text-gray-300">
+                    When international arms dealer and criminal mastermind Elena Federova orchestrates seven...
+                  </p>
+                  <div className="flex gap-4 mt-4">
+                    <button className="flex items-center gap-2 bg-green-600 px-4 py-2 rounded-md">
+                      <FaPlayCircle /> Play Now
+                    </button>
+                    <button className="flex items-center gap-2 border border-white/20 px-4 py-2 rounded-md">
+                      <CiBookmark /> Add Watchlist
+                    </button>
                   </div>
                 </div>
               </div>
-            ))}
+            </div>
+
+            <div className="w-[60%] h-[48vh] grid grid-cols-3 overflow-auto gap-4">
+              {moviesOnAwards.map((movie, index) => (
+                <div key={index} className="relative ">
+                  <div className="relative rounded-lg overflow-hidden">
+                    <img
+                      src={movie.posterUrl}
+                      alt={movie.title}
+                      className="w-full h-[180px] object-cover"
+                    />
+                    <div className="absolute top-2 right-2">
+                      <span className="bg-black/50 px-2 py-1 text-xs rounded">{movie.parentalGuidance}</span>
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black to-transparent">
+                      <h3 className="font-medium">{movie.title}</h3>
+                      <div className="flex items-center text-sm text-gray-400 mt-1">
+                        <span className="text-yellow-400">⭐</span>
+                        <span>{movie.rating}</span>
+                        <span className="mx-2">•</span>
+                        <span>{movie.genres}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </section>
-
+      
       </main>
 
-      <div className=' p-5 '>
-        <Footer />
-      </div>
+      <Footer />
     </>
   );
-};
+}
 
-export default Home;
+export default Home
