@@ -22,6 +22,8 @@ const Navbar = () => {
         <div>Movie Release</div>
         <div>Forum</div>
         <div>About</div>
+        <div>Log In</div>
+        <div>Sign Up</div>
       </div>
       <div className="hidden md:flex gap-4 items-center">
         <div className="text-2xl font-semibold">
@@ -40,6 +42,8 @@ const Navbar = () => {
           <div onClick={toggleMenu}>Movie Release</div>
           <div onClick={toggleMenu}>Forum</div>
           <div onClick={toggleMenu}>About</div>
+          <div onClick={toggleMenu}>Log In</div>
+          <div onClick={toggleMenu}>Sign Up</div>
           <div className="flex gap-4 items-center">
             <button className="border p-2 rounded-md px-4" type="button">Sign up</button>
             <button className="bg-green-500 p-2 rounded-md px-4 text-white" type="button">Log in</button>
