@@ -2,6 +2,7 @@ import React from 'react';
 import { CiBookmark } from 'react-icons/ci';
 import { FaPlayCircle } from 'react-icons/fa';
 import Navbar from './Navbar';
+import Footer from './Footer';
 
 
 const MoviePage = () => {
@@ -164,6 +165,7 @@ const MoviePage = () => {
           </div>
         ))}
       </div>
+      <Footer />
     </div>
   );
 };
