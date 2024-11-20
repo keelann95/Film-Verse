@@ -1,5 +1,6 @@
 import Home from './components/Home'
 import MovieDetails from './components/MovieDetails';
+import MoviePage from './components/MoviePage';
 import Tracker from './components/Tracker'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -9,9 +10,12 @@ const App = () => {
 
   return (
     <>
+    <div>
+      <MoviePage />
+    </div>
        <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
+          {/* <Route path="/" element={<Home />} /> */}
           {/* <Route path="/discover" element={<Discover />} />
           <Route path="/releases" element={<MovieReleases />} />
           <Route path="/forum" element={<Forum />} />
@@ -19,7 +23,7 @@ const App = () => {
           <Route path="/search" element={<Search />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} /> */}
-          <Route path="/movie/:movieName" element={<MovieDetails />} />
+          {/* <Route path="/movie/:movieName" element={<MovieDetails />} /> */}
 
 
         </Routes>
