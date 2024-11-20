@@ -31,6 +31,8 @@ const Navbar = () => {
         {NavLinks.map((link) => (
           <Link key={link.path} to={link.path}>{link.title}</Link>
         ))}
+        <div>Log In</div>
+        <div>Sign Up</div>
       </div>
       
       {/* Desktop Search & Auth */}
@@ -59,6 +61,8 @@ const Navbar = () => {
               {link.title}
             </Link>
           ))}
+          <div onClick={toggleMenu}>Log In</div>
+          <div onClick={toggleMenu}>Sign Up</div>
           <div className="flex gap-4 items-center">
             <Link to="/signup" className="border p-2 rounded-md px-4" onClick={toggleMenu}>Sign up</Link>
             <Link to="/login" className="bg-green-500 p-2 rounded-md px-4 text-white" onClick={toggleMenu}>Log in</Link>
