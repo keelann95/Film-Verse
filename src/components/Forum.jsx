@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaThumbsUp, FaReply } from 'react-icons/fa';
+import Navbar from './Navbar';
 
 export default function Forum() {
   const [comments] = useState([
@@ -31,6 +32,7 @@ export default function Forum() {
 
   return (
     <div className="max-w-4xl mx-auto bg-dark-light p-6 rounded-lg">
+      <Navbar />
       <div className="mb-6">
         <button className="text-gray-400 hover:text-white">Back</button>
       </div>

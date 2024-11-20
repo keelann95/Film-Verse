@@ -101,7 +101,7 @@ const MoviePage = () => {
         </section>
 
       <div className="mb-4">
-        <h2 className="text-lg font-bold mb-2">New Movie</h2>
+        <h2 className="text-lg font-bold mb-2">Watchlist</h2>
         <div className="grid grid-cols-5 gap-4">
           {newMovies.map((movie, index) => (
             <div key={index} className="flex flex-col items-center">
