@@ -7,6 +7,9 @@ import { BookmarkIcon } from "lucide-react";
 import Footer from './Footer';
 import { useState, useEffect } from 'react';
 import { data } from 'autoprefixer';
+import Login from './Login';
+import Signup from './Signup';
+
 
 const Home = () => {
   const [featuredMovies, setFeaturedMovies] = useState([]);
