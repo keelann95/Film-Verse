@@ -19,7 +19,8 @@ const App = () => {
           <Route path="/search" element={<Search />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} /> */}
-          <Route path="/movie/:id" element={<MovieDetails />} />
+          <Route path="/movie/:movieName" element={<MovieDetails />} />
+
 
         </Routes>
      
