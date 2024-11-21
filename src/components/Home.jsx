@@ -91,7 +91,7 @@ const Home = () => {
         }));
   
         const limitedAndSkippedPopularMovies = transformedPopularMovies.slice(skip, skip + limit);
-        setPopularMovies(limitedAndSkippedPopularMovies); // Set popular movies in the state
+        setPopularMovies(limitedAndSkippedPopularMovies); 
       } catch (error) {
         console.error("Error fetching popular movies:", error);
       }
