@@ -9,30 +9,54 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const response = await fetch('https://film-verse-backend.onrender.com/login', {
+      // Make the login API request
+      const response = await fetch('http://127.0.0.1:5555/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+  
+      if (!response.ok) {
+        // Parse and handle the error response
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+  
+        // Provide a detailed error message
+        setError(`Login failed: ${response.status} - ${errorText}`);
+        return;
+      }
+  
       const data = await response.json();
-
+      console.log('Login response data:', data);
+      const token = data.token;
+      console.log(token);
+      
       if (data.success) {
-        // Handle successful login (e.g., redirect to a protected page)
-        navigate('/protected-page');
+        // Store the token in localStorage
+        localStorage.setItem('token', token);
+  
+        // Optionally store the user info in localStorage as well
+        // localStorage.setItem('user', JSON.stringify(data.user)); 
+
+        // Navigate to the desired route (e.g., dashboard or home)
+        navigate('/');
       } else {
-        setError(data.error);
+        // Display the error from the API response
+        setError(data.error || 'Login failed');
       }
     } catch (error) {
-      console.error('Error:', error);
-      setError('An error occurred. Please try again later.');
+      console.error('Detailed Login Error:', error);
+      setError('Network error. Please check your connection and try again.');
     }
   };
-
+  
   return (
     <div className="flex justify-center items-center min-h-screen bg-black text-white">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg text-black">
