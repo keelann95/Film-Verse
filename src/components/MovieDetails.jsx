@@ -2,21 +2,23 @@ import  { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import Footer from '../components/Footer'
+import { useMovieContext } from './MovieProvider'; 
 
-import { Play, Plus,  Share2 } from 'react-feather'; // Ensure you have these icons or replace with your icons
+
+import { Play, Plus,  Share2 } from 'react-feather'; 
 import Navbar from './Navbar';
 
 const MovieDetails = () => {
   const location = useLocation();
   const movie = location.state;
-  const [isWatchlisted, setIsWatchlisted] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
   const navigate = useNavigate();
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const limit = 10;
   const skip = 10;
   
 
+  
+  
 
   useEffect(() => {
     console.log("Movie data received:", movie); // Debug log
@@ -33,7 +35,7 @@ const MovieDetails = () => {
   useEffect(() => {
     const fetchUpcomingMovies = async () => {
       try {
-        const response = await fetch('https://film-verse-backend.onrender.com/upcoming');
+        const response = await fetch('http://127.0.0.1:5555/upcoming');
         const data = await response.json();
   
         const transformedUpcomingMovies = data.map((movie) => ({
@@ -44,7 +46,7 @@ const MovieDetails = () => {
         }));
   
         const limitedAndSkippedUpcomingMovies = transformedUpcomingMovies.slice(skip, skip + limit);
-        setUpcomingMovies(limitedAndSkippedUpcomingMovies); // Set upcoming movies in state
+        setUpcomingMovies(limitedAndSkippedUpcomingMovies); 
       } catch (error) {
         console.error("Error fetching upcoming movies:", error);
       }
@@ -55,13 +57,13 @@ const MovieDetails = () => {
 
 
   
-  const handleMovieClick = (movie) => {
-    // Generalize the movie data by checking if keys exist
+  const handleeMovieClick = (movie) => {
+    
     const movieData = {
-      movie_name: movie.movie_name || movie.title,  // Use either `movie_name` or `title`
-      title: movie.movie_name || movie.title,  // Same for `title`
-      backgroundImage: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  // Fallback to placeholder
-      posterUrl: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  // Fallback to placeholder
+      movie_name: movie.movie_name || movie.title,  
+      title: movie.movie_name || movie.title, 
+      backgroundImage: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080", 
+      posterUrl: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  
       rating: movie.rating,
       runtime: movie.runtime,
       release_date: movie.release_date,
@@ -69,16 +71,118 @@ const MovieDetails = () => {
       overview: movie.overview
     };
   
-    // Navigate to the movie details page, passing movie data
+   
     navigate(`/movie/${encodeURIComponent(movie.movie_name || movie.title)}`, {
       state: movieData
     });
   };
   
+  const { 
+    watchlist, 
+    likedMovies, 
+    addToWatchlist, 
+    removeFromWatchlist, 
+    addToLikedMovies, 
+    removeFromLikedMovies 
+  } = useMovieContext();
+
+ 
+  const [isWatchlisted, setIsWatchlisted] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+
+  useEffect(() => {
+   
+    setIsWatchlisted(
+      watchlist.some(item => 
+        (item.movie_name === movie?.movie_name || item.title === movie?.title) &&
+        (item.backgroundImage === movie?.backgroundImage)
+      )
+    );
+    setIsLiked(
+      likedMovies.some(item => 
+        (item.movie_name === movie?.movie_name || item.title === movie?.title) &&
+        (item.backgroundImage === movie?.backgroundImage)
+      )
+    );
+  }, [movie, watchlist, likedMovies]);
+
+  useEffect(() => {
+    console.log("Movie data received:", movie); 
+  }, [movie]);
+
+  if (!movie) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-900">
+        <h1 className="text-2xl text-white">Loading movie details...</h1>
+      </div>
+    );
+  }
+
+  useEffect(() => {
+    const fetchUpcomingMovies = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:5555/upcoming');
+        const data = await response.json();
+  
+        const transformedUpcomingMovies = data.map((movie) => ({
+          movie_name: movie.movie_name,
+          rating: movie.rating || "N/A",
+          genres: movie.name || [],
+          posterImage: movie.movie_picture || "/api/placeholder/1920/1080",
+        }));
+  
+        const limitedAndSkippedUpcomingMovies = transformedUpcomingMovies.slice(skip, skip + limit);
+        setUpcomingMovies(limitedAndSkippedUpcomingMovies);
+      } catch (error) {
+        console.error("Error fetching upcoming movies:", error);
+      }
+    };
+  
+    fetchUpcomingMovies();
+  }, []);
+
+  const handleMovieClick = (movie) => {
+    const movieData = {
+      movie_name: movie.movie_name || movie.title,
+      title: movie.movie_name || movie.title,
+      backgroundImage: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",
+      posterUrl: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",
+      rating: movie.rating,
+      runtime: movie.runtime,
+      release_date: movie.release_date,
+      genres: movie.name,
+      overview: movie.overview
+    };
+  
+    navigate(`/movie/${encodeURIComponent(movie.movie_name || movie.title)}`, {
+      state: movieData
+    });
+  };
+
+  const handleWatchlistToggle = () => {
+    if (isWatchlisted) {
+      removeFromWatchlist(movie);
+      setIsWatchlisted(false);
+    } else {
+      addToWatchlist(movie);
+      setIsWatchlisted(true);
+    }
+  };
+
+  const handleLikeToggle = () => {
+    if (isLiked) {
+      removeFromLikedMovies(movie);
+      setIsLiked(false);
+    } else {
+      addToLikedMovies(movie);
+      setIsLiked(true);
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-gray-900">
-      {/* Hero Section */}
+     
       
       <div 
         className="relative h-[70vh] w-full"
@@ -134,35 +238,23 @@ const MovieDetails = () => {
             )}
 
             <div className="flex flex-wrap gap-4 justify-between">
-              <button className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 px-6 py-3 rounded-lg font-medium transition-colors">
-                <Play className="w-5 h-5" />
-                Play Now
-              </button>
-            
-              <button 
-                onClick={() => setIsWatchlisted(!isWatchlisted)}
-                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-6 py-3 rounded-lg font-medium transition-colors"
-              >
-                <Plus className="w-5 h-5" />
-                {isWatchlisted ? 'Remove Watchlist' : 'Add Watchlist'}
-              </button>
+            <button 
+      onClick={handleWatchlistToggle}
+      className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-6 py-3 rounded-lg font-medium transition-colors"
+    >
+      <Plus className="w-5 h-5" />
+      {isWatchlisted ? 'Remove Watchlist' : 'Add Watchlist'}
+    </button>
 
-             
-
-              <button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-6 py-3 rounded-lg font-medium transition-colors">
-                <Share2 className="w-5 h-5" />
-                Share
-              </button>
-
-              <button 
-                onClick={() => setIsLiked(!isLiked)}
-                className={`flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-6 py-3 rounded-lg font-medium transition-colors ${
-                  isLiked ? 'bg-red-500' : 'bg-white/10'
-                }`}
-              >
-                <span className="w-5 h-5">❤️</span> {/* Or use a like icon */}
-                {isLiked ? 'Liked' : 'Like'}
-              </button>
+    <button 
+      onClick={handleLikeToggle}
+      className={`flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-6 py-3 rounded-lg font-medium transition-colors ${
+        isLiked ? 'bg-red-500' : 'bg-white/10'
+      }`}
+    >
+      <span className="w-5 h-5">❤️</span>
+      {isLiked ? 'Liked' : 'Like'}
+    </button>
             </div>
           </div>
         </div>

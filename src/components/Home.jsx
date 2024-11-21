@@ -8,8 +8,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
 
-import Login from './Login';
-import Signup from './Signup';
+
 
 
 const Home = () => {
@@ -21,7 +20,7 @@ const Home = () => {
   const [moreMoviesToDisplay, setMoreMoviesToDisplay] = useState([]);
   const [popularMoviesToDisplay, setPopularMoviesToDisplay] = useState([]);
   const [topRatedTVSeries, setTopRatedTVSeries] = useState([]);
-  const [highlightedMovies, setHighlightedMovies] = useState([]); // Renamed state
+  const [highlightedMovies, setHighlightedMovies] = useState([]); 
   const navigate = useNavigate();
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -33,7 +32,7 @@ const Home = () => {
     
     const fetchMovies = async () => {
       try {
-        const response = await fetch('https://film-verse-backend.onrender.com/trending');
+        const response = await fetch('http://127.0.0.1:5555/trending');
         const data = await response.json();
         
         const transformedMovies = data.map((movie) => ({
@@ -78,7 +77,7 @@ const Home = () => {
   useEffect(() => {
     const fetchPopularMovies = async () => {
       try {
-        const response = await fetch('https://film-verse-backend.onrender.com/popular');
+        const response = await fetch('http://127.0.0.1:5555/popular');
         const data = await response.json();
   
         const transformedPopularMovies = data.map((movie) => ({
@@ -91,7 +90,7 @@ const Home = () => {
         }));
   
         const limitedAndSkippedPopularMovies = transformedPopularMovies.slice(skip, skip + limit);
-        setPopularMovies(limitedAndSkippedPopularMovies); // Set popular movies in the state
+        setPopularMovies(limitedAndSkippedPopularMovies); 
       } catch (error) {
         console.error("Error fetching popular movies:", error);
       }
@@ -103,7 +102,7 @@ const Home = () => {
   useEffect(() => {
     const fetchUpcomingMovies = async () => {
       try {
-        const response = await fetch('https://film-verse-backend.onrender.com/upcoming');
+        const response = await fetch('http://127.0.0.1:5555/upcoming');
         const data = await response.json();
   
         const transformedUpcomingMovies = data.map((movie) => ({
@@ -114,7 +113,7 @@ const Home = () => {
         }));
   
         const limitedAndSkippedUpcomingMovies = transformedUpcomingMovies.slice(skip, skip + limit);
-        setUpcomingMovies(limitedAndSkippedUpcomingMovies); // Set upcoming movies in state
+        setUpcomingMovies(limitedAndSkippedUpcomingMovies); 
       } catch (error) {
         console.error("Error fetching upcoming movies:", error);
       }
@@ -126,7 +125,7 @@ const Home = () => {
   useEffect(() => {
     const fetchPopularMovies = async () => {
       try {
-        const response = await fetch('https://film-verse-backend.onrender.com/popular');
+        const response = await fetch('http://127.0.0.1:5555/popular');
         const movieData = await response.json();
   
         const formattedMovies = movieData.map((movie) => ({
@@ -149,7 +148,7 @@ const Home = () => {
   useEffect(() => {
     const fetchFeaturedMovies = async () => {
       try {
-        const response = await fetch('https://film-verse-backend.onrender.com/popular');
+        const response = await fetch('http://127.0.0.1:5555/popular');
         const moviesData = await response.json();
   
         const formattedMovies = moviesData.map((movie) => ({
@@ -159,9 +158,8 @@ const Home = () => {
           posterUrl: movie.movie_picture || "/api/placeholder/1920/1080",
         }));
   
-        // Skip the first 72 movies and limit to the next 40
-        const moviesToDisplay = formattedMovies.slice(72, 112); // Skip 72 and limit the next 40
-        setPopularMoviesToDisplay(moviesToDisplay); // Store in state
+        const moviesToDisplay = formattedMovies.slice(72, 112); 
+        setPopularMoviesToDisplay(moviesToDisplay); 
       } catch (error) {
         console.error("Error fetching featured movies:", error);
       }
@@ -173,7 +171,7 @@ const Home = () => {
   useEffect(() => {
     const fetchMoreMovies = async () => {
       try {
-        const response = await fetch('https://film-verse-backend.onrender.com/popular');
+        const response = await fetch('http://127.0.0.1:5555/popular');
         const movieData = await response.json();
   
         const formattedMovies = movieData.map((movie) => ({
@@ -183,9 +181,8 @@ const Home = () => {
           posterUrl: movie.movie_picture || "/api/placeholder/1920/1080",
         }));
   
-        // Skip the first 115 movies and limit the next 40
-        const moviesToDisplay = formattedMovies.slice(115, 155); // Skip 115 and limit to next 40
-        setMoreMoviesToDisplay(moviesToDisplay); // Store in state
+        const moviesToDisplay = formattedMovies.slice(115, 155); 
+        setMoreMoviesToDisplay(moviesToDisplay); 
       } catch (error) {
         console.error("Error fetching more movies:", error);
       }
@@ -197,7 +194,7 @@ const Home = () => {
   useEffect(() => {
     const fetchTopRatedTVSeries = async () => {
       try {
-        const response = await fetch('https://film-verse-backend.onrender.com/top_rated_tv_series');
+        const response = await fetch('http://127.0.0.1:5555/top_rated_tv_series');
         const tvSeriesData = await response.json();
   
         const formattedSeries = tvSeriesData.map((series) => ({
@@ -207,7 +204,7 @@ const Home = () => {
           posterUrl: series.movie_picture || "/api/placeholder/1920/1080",
         }));
   
-        setTopRatedTVSeries(formattedSeries); // Store in state
+        setTopRatedTVSeries(formattedSeries); 
       } catch (error) {
         console.error("Error fetching top-rated TV series:", error);
       }
@@ -220,7 +217,7 @@ const Home = () => {
   useEffect(() => {
     const fetchMoviesOnAwards = async () => {
       try {
-        const response = await fetch("https://film-verse-backend.onrender.com/trending");
+        const response = await fetch("http://127.0.0.1:5555/trending");
         const moviesResponseData = await response.json();
 
         const filteredMovies = moviesResponseData.slice(100, 200);
@@ -245,7 +242,7 @@ const Home = () => {
   useEffect(() => {
     const fetchHighlightedMovies = async () => {
       try {
-        const response = await fetch('https://film-verse-backend.onrender.com/trending');
+        const response = await fetch('http://127.0.0.1:5555/trending');
         const data = await response.json();
 
         const transformedMovies = data.map((movie) => ({
@@ -268,12 +265,11 @@ const Home = () => {
 
   
   const handleMovieClick = (movie) => {
-    // Generalize the movie data by checking if keys exist
     const movieData = {
-      movie_name: movie.movie_name || movie.title,  // Use either `movie_name` or `title`
-      title: movie.movie_name || movie.title,  // Same for `title`
-      backgroundImage: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  // Fallback to placeholder
-      posterUrl: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  // Fallback to placeholder
+      movie_name: movie.movie_name || movie.title,  
+      title: movie.movie_name || movie.title,  
+      backgroundImage: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  
+      posterUrl: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  
       rating: movie.rating,
       runtime: movie.runtime,
       release_date: movie.release_date,
@@ -281,7 +277,6 @@ const Home = () => {
       overview: movie.overview
     };
   
-    // Navigate to the movie details page, passing movie data
     navigate(`/movie/${encodeURIComponent(movie.movie_name || movie.title)}`, {
       state: movieData
     });
@@ -340,7 +335,7 @@ const Home = () => {
               <button 
                 className="flex items-center bg-[#03A737] text-white rounded-md px-3 py-2 text-sm sm:text-base hover:bg-[#02812e] transition-colors duration-300 ease-in-out"
                 aria-label="Watch Now"
-                onClick={() => handleMovieClick(currentMovie)}  // Attach handleClick to the button
+                onClick={() => handleMovieClick(currentMovie)} 
               >
                 <FaPlayCircle className="mr-2" /> Watch Now
               </button>
@@ -469,9 +464,7 @@ const Home = () => {
   {/* Gradient Overlay */}
   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
 
-  {/* Main Content Flex Container */}
   <div className="relative flex z-10 w-full items-center space-x-8">
-    {/* Text Content */}
     <div className="text-white space-y-4 w-full md:w-[60%]">
       <h1 className="text-3xl font-semibold">Featured in Saintstream</h1>
       <p className="text-lg">Best featured for you</p>
@@ -493,7 +486,6 @@ const Home = () => {
         became a worldwide pop culture phenomenon.
       </p>
 
-      {/* Buttons */}
       <div className="flex items-center space-x-4 pt-4">
         <button className="flex items-center bg-[#03A737] text-white rounded-md px-4 py-2">
           <FaPlayCircle className="mr-2" /> Watch Now
@@ -504,14 +496,13 @@ const Home = () => {
       </div>
     </div>
 
- {/* Horizontally Scrollable Poster Section */}
 <div className="w-full overflow-x-auto p-2">
   <div className="flex space-x-4">
     {popularMoviesList.map((movie, index) => (
       <div
         key={index}
         className="w-64 h-80 rounded-lg overflow-hidden flex-shrink-0 relative"
-        onClick={() => handleMovieClick(movie)}  // Trigger handleMovieClick when poster is clicked
+        onClick={() => handleMovieClick(movie)}  
       >
         <img
           className="rounded-lg w-full h-full object-cover"
@@ -519,7 +510,6 @@ const Home = () => {
           alt={movie.title}
         />
 
-        {/* Poster Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg">
           <div className="absolute bottom-4 left-4 text-white">
             <h1 className="text-xl font-semibold font-serif">{movie.title}</h1>
@@ -551,18 +541,17 @@ const Home = () => {
       {popularMoviesToDisplay.map((movie, index) => (
         <div
           key={index}
-          onClick={() => handleMovieClick(movie)}  // Reusable click handler
+          onClick={() => handleMovieClick(movie)} 
           className="w-[17vw] p-2 cursor-pointer group hover:scale-105 transition-transform duration-200"
         >
           <div className="w-[30vw]">
-            {/* Ensure posterUrl or posterImage is available, fallback to a placeholder image */}
             <img
               className="object-center object-cover rounded-2xl h-[20vh] w-[17vw]"
-              src={movie.posterImage || movie.posterUrl || "/api/placeholder/400/600"}  // Adjust for different movie data keys
-              alt={movie.title || movie.movie_name || 'Movie Poster'}  // Adjust for different title keys
+              src={movie.posterImage || movie.posterUrl || "/api/placeholder/400/600"}  
+              alt={movie.title || movie.movie_name || 'Movie Poster'}  
             />
             <div className="p-4 space-y-1">
-              <h1 className="text-2xl font-serif">{movie.title || movie.movie_name}</h1>  {/* Adjust for different title keys */}
+              <h1 className="text-2xl font-serif">{movie.title || movie.movie_name}</h1>  
               <div className="flex gap-2 font-serif text-gray-300 text-md">
                 <span>⭐</span>
                 <h1>{movie.rating}</h1>
@@ -585,13 +574,13 @@ const Home = () => {
       {moreMoviesToDisplay.map((movie, index) => (
         <div
           key={index}
-          onClick={() => handleMovieClick(movie)}  // Added onClick to trigger handleMovieClick
+          onClick={() => handleMovieClick(movie)}  
           className="w-[17vw] p-2 cursor-pointer group hover:scale-105 transition-transform duration-200"
         >
           <div className="w-[17vw]">
             <img
               className="object-center object-cover rounded-2xl h-[20vh] w-[17vw]"
-              src={movie.posterUrl || "/api/placeholder/400/600"}  // Fallback to placeholder
+              src={movie.posterUrl || "/api/placeholder/400/600"}  
               alt={movie.title}
             />
             <div className="p-4 space-y-1">
@@ -618,13 +607,13 @@ const Home = () => {
       {topRatedTVSeries.map((series, index) => (
         <div
           key={index}
-          onClick={() => handleMovieClick(series)}  // Added onClick to trigger handleMovieClick
+          onClick={() => handleMovieClick(series)}  
           className="w-[17vw] p-2 cursor-pointer group hover:scale-105 transition-transform duration-200"
         >
           <div className="w-[30vw]">
             <img
               className="object-center object-cover rounded-2xl h-[20vh] w-[17vw]"
-              src={series.posterUrl || "/api/placeholder/400/600"}  // Fallback to placeholder
+              src={series.posterUrl || "/api/placeholder/400/600"}  
               alt={series.title}
             />
             <div className="p-4 space-y-1">
@@ -708,12 +697,12 @@ const Home = () => {
           {moviesOnAwards.map((movie, index) => (
             <div
               key={index}
-              onClick={() => handleMovieClick(movie)}  // Added onClick to trigger handleMovieClick
+              onClick={() => handleMovieClick(movie)}
               className="relative cursor-pointer group hover:scale-105 transition-transform duration-200"
             >
               <div className="relative rounded-lg overflow-hidden">
                 <img
-                  src={movie.posterUrl || "/api/placeholder/400/600"}  // Fallback to placeholder
+                  src={movie.posterUrl || "/api/placeholder/400/600"}  
                   alt={movie.title}
                   className="w-full h-[180px] object-cover"
                 />
