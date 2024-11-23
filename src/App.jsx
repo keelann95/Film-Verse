@@ -1,46 +1,40 @@
-import CreateProfile from './components/CreateProfile';
-import Forum from './components/Forum';
-import Home from './components/Home'
-import Login from './components/Login';
-import MovieDetails from './components/MovieDetails';
-import MoviePage from './components/MoviePage';
-import { MovieProvider } from './components/MovieProvider';
-// import { MyProfilePage, PostComponent, ProfileHeader } from './components/MyPage';
-import Signup from './components/Signup';
-import Tracker from './components/Tracker'
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './components/Home';
+import MovieDetails from './components/MovieDetails';
+import SeriesDetails from './components/SeriesDetails';
+import Login from './components/Login';
+import Signup from './components/Signup';
+import InfluencerPage from './components/InfluencerPage';
+import Clubs from './components/Clubs';
+import ClubDetails from './components/ClubDetails';
+import CreateClub from './components/CreateClub';
+import Forum from './components/Forum';
+import CreatePost from './components/CreatePost';
+import UpdateProfile from './components/UpdateProfile';
+import { MovieProvider } from './components/MovieProvider';
 
 const App = () => {
-
- 
-
   return (
-    <>
     <MovieProvider>
-
-  
-    <div>
-      {/* <MoviePage /> */}
-    </div>
-       <Router>
+      <Router>
         <Routes>
           <Route path="/" element={<Home />} />
-           <Route path="/discover" element={<MoviePage />} />
-          {/* <Route path="/releases" element={<MovieReleases />} /> */}
-          <Route path="/forum" element={<CreateProfile />} />
-          {/* <Route path="/about" element={<PostComponent />} /> */}
-          {/* <Route path="/search" element={<Search />} /> */}
+          <Route path="/movie/:id" element={<MovieDetails />} />
+          <Route path="/series/:id" element={<SeriesDetails />} />
           <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-          <Route path="/movie/:movieName" element={<MovieDetails />} /> 
-
-
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/influencer" element={<InfluencerPage />} />
+          <Route path="/clubs" element={<Clubs />} />
+          <Route path="/clubs/:id" element={<ClubDetails />} />
+          <Route path="/clubs/create" element={<CreateClub />} />
+          <Route path="/forum" element={<Forum />} />
+          <Route path="/create-post" element={<CreatePost />} />
+          <Route path="/update-profile" element={<UpdateProfile />} />
         </Routes>
-     
-    </Router>
+      </Router>
     </MovieProvider>
-    </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
