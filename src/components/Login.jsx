@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { showLoginSuccess, showLoginError } from '../utils/alert';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
   
     try {
-      // Make the login API request
       const response = await fetch('http://127.0.0.1:5555/login', {
         method: 'POST',
         headers: {
@@ -19,83 +20,82 @@ function Login() {
         },
         body: JSON.stringify({ email, password }),
       });
-  
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
-  
-      if (!response.ok) {
-        // Parse and handle the error response
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-  
-        // Provide a detailed error message
-        setError(`Login failed: ${response.status} - ${errorText}`);
-        return;
-      }
-  
-      const data = await response.json();
-      console.log('Login response data:', data);
-      const token = data.token;
-      console.log(token);
-      
-      if (data.success) {
-        // Store the token in localStorage
-        localStorage.setItem('token', token);
-  
-        // Optionally store the user info in localStorage as well
-        // localStorage.setItem('user', JSON.stringify(data.user)); 
 
-        // Navigate to the desired route (e.g., dashboard or home)
-        navigate('/');
-      } else {
-        // Display the error from the API response
-        setError(data.error || 'Login failed');
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error('Login failed');
       }
+
+      // Store token and user ID
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.user.id.toString());
+      
+      await showLoginSuccess(data.user.username);
+      navigate('/');
     } catch (error) {
-      console.error('Detailed Login Error:', error);
-      setError('Network error. Please check your connection and try again.');
+      console.error('Login error:', error);
+      showLoginError(error.message || 'Failed to login. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
   
   return (
-    <div className="flex justify-center items-center min-h-screen bg-black text-white">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg text-black">
-        <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium">Email</label>
+    <div className="flex justify-center items-center min-h-screen bg-[#0a0a0a] text-white">
+      <div className="w-full max-w-md bg-gray-800/50 backdrop-blur-sm p-8 rounded-lg shadow-lg border border-gray-700/50">
+        <h2 className="text-3xl font-bold text-center mb-6">Welcome Back</h2>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+              Email
+            </label>
             <input
               type="email"
               id="email"
-              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full p-3 mt-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+              placeholder="Enter your email"
+              required
             />
           </div>
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-medium">Password</label>
+
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-300">
+              Password
+            </label>
             <input
               type="password"
               id="password"
-              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full p-3 mt-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+              placeholder="Enter your password"
+              required
             />
           </div>
+
           <button
             type="submit"
-            className="w-full py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-800"
+            disabled={loading}
+            className={`
+              w-full py-3 bg-purple-600 text-white font-semibold rounded-lg
+              hover:bg-purple-700 transition-colors
+              disabled:opacity-50 disabled:cursor-not-allowed
+            `}
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-        <div className="mt-4 text-center">
-          <p className="text-sm">
-            Don't have an account? Signup
-            <Link to="/signup" className="text-blue-600 hover:text-blue-800">Sign up</Link>
+
+        <div className="mt-6 text-center">
+          <p className="text-gray-400">
+            Don't have an account?{' '}
+            <Link to="/signup" className="text-purple-400 hover:text-purple-300">
+              Sign up
+            </Link>
           </p>
         </div>
       </div>

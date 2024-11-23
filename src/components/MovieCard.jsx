@@ -1,4 +1,6 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
+import { Star, Play } from 'lucide-react';
 
 const DEFAULT_MOVIE_POSTER = 'https://images.unsplash.com/photo-1485846234645-a62644f84728?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80';
 
@@ -9,7 +11,7 @@ const MovieCard = ({ movie, onWatchNow }) => {
   };
 
   return (
-    <div className="relative group flex-shrink-0 w-1/5">
+    <div className="relative group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 flex-shrink-0 px-2">
       <div className="relative bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden h-full">
         <img
           src={movie.movie_picture || DEFAULT_MOVIE_POSTER}
@@ -23,16 +25,18 @@ const MovieCard = ({ movie, onWatchNow }) => {
           <div className="space-y-2">
             <h4 className="text-lg font-bold text-white">{movie.movie_name}</h4>
             <div className="flex items-center">
+              <Star className="text-yellow-400 w-4 h-4 mr-1" />
               <span className="text-yellow-400 font-semibold">
-                ★ {movie.rating?.toFixed(1) || 'N/A'}/10
+                {movie.rating?.toFixed(1) || 'N/A'}/10
               </span>
             </div>
             <p className="text-gray-300 text-sm line-clamp-3">{movie.overview}</p>
           </div>
           <button
             onClick={handleWatchClick}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white text-center py-2 rounded-lg transition-colors mt-4"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white text-center py-2 rounded-lg transition-colors mt-4 flex items-center justify-center gap-2"
           >
+            <Play size={18} />
             Watch Now
           </button>
         </div>

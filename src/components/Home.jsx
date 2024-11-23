@@ -53,6 +53,7 @@ const Home = () => {
 
     fetchMovies();
   }, []);
+  
 
   useEffect(() => {
     if (featuredMovies.length === 0) return;
@@ -194,7 +195,7 @@ const Home = () => {
   useEffect(() => {
     const fetchTopRatedTVSeries = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5555/top_rated_tv_series');
+        const response = await fetch('http://127.0.0.1:5555/tv-series');
         const tvSeriesData = await response.json();
   
         const formattedSeries = tvSeriesData.map((series) => ({
@@ -264,22 +265,14 @@ const Home = () => {
   }, []);
 
   
-  const handleMovieClick = (movie) => {
-    const movieData = {
-      movie_name: movie.movie_name || movie.title,  
-      title: movie.movie_name || movie.title,  
-      backgroundImage: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  
-      posterUrl: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  
-      rating: movie.rating,
-      runtime: movie.runtime,
-      release_date: movie.release_date,
-      genres: movie.name,
-      overview: movie.overview
-    };
-  
-    navigate(`/movie/${encodeURIComponent(movie.movie_name || movie.title)}`, {
-      state: movieData
-    });
+ const handleMovieClick = (movie) => {
+    // Update to use the movie's ID for navigation
+    const movieId = movie.id || movie.movie_id;
+    if (movieId) {
+      navigate(`/movie/${movieId}`);
+    } else {
+      console.error('Movie ID not found:', movie);
+    }
   };
   
 

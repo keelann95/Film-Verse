@@ -1,103 +1,125 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { showSignupSuccess, showSignupError } from '../utils/alert';
 
 function Signup() {
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    username: '',
+    password: ''
+  });
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleSignup = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
     
     try {
       const response = await fetch('http://127.0.0.1:5555/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, username, password }),
+        body: JSON.stringify(formData)
       });
 
-      const responseData = await response.json();
-      setLoading(false);
+      const data = await response.json();
 
-      if (response.ok) {
-        setMessage('Signup successful! Redirecting to login...');
-        setTimeout(() => navigate('/login'), 2000);
-      } else {
-        // Handling different error messages from the backend
-        if (responseData.error) {
-          setMessage(responseData.error);
-        } else {
-          setMessage('Signup failed. Please try again.');
-        }
+      if (!response.ok) {
+        throw new Error(data.error || 'Signup failed');
       }
+
+      // Store token and user ID
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.user.id.toString());
+
+      await showSignupSuccess();
+      navigate('/');
     } catch (error) {
-      console.error('Error during signup:', error);
+      console.error('Signup error:', error);
+      showSignupError(error.message || 'Failed to create account');
+    } finally {
       setLoading(false);
-      setMessage('An error occurred. Please try again later.');
     }
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   return (
-    <div className="flex justify-center items-center min-h-screen bg-black text-white">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg text-black">
-        <h2 className="text-3xl font-bold text-center mb-6">Sign Up</h2>
-        <form onSubmit={handleSignup}>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium">Email</label>
+    <div className="flex justify-center items-center min-h-screen bg-[#0a0a0a] text-white">
+      <div className="w-full max-w-md bg-gray-800/50 backdrop-blur-sm p-8 rounded-lg shadow-lg border border-gray-700/50">
+        <h2 className="text-3xl font-bold text-center mb-6">Create Account</h2>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-300">
+              Email
+            </label>
             <input
               type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full p-3 mt-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
               placeholder="Enter your email"
-              className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               required
             />
           </div>
-          <div className="mb-4">
-            <label htmlFor="username" className="block text-sm font-medium">Username</label>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300">
+              Username
+            </label>
             <input
               type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your username"
-              className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              className="w-full p-3 mt-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+              placeholder="Choose a username"
               required
             />
           </div>
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-medium">Password</label>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300">
+              Password
+            </label>
             <input
               type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full p-3 mt-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+              placeholder="Create a password"
               required
             />
           </div>
+
           <button
             type="submit"
-            className="w-full py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-800"
             disabled={loading}
+            className={`
+              w-full py-3 bg-purple-600 text-white font-semibold rounded-lg
+              hover:bg-purple-700 transition-colors
+              disabled:opacity-50 disabled:cursor-not-allowed
+            `}
           >
-            {loading ? 'Signing Up...' : 'Sign Up'}
+            {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
-        {message && <p className="mt-4 text-center text-red-500">{message}</p>}
-        <div className="mt-4 text-center">
-          <p className="text-sm">
+
+        <div className="mt-6 text-center">
+          <p className="text-gray-400">
             Already have an account?{' '}
-            <span className="text-blue-600 hover:text-blue-800 cursor-pointer" onClick={() => navigate('/login')}>
+            <Link to="/login" className="text-purple-400 hover:text-purple-300">
               Log in
-            </span>
+            </Link>
           </p>
         </div>
       </div>

@@ -1,82 +1,90 @@
-import React, {useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
+import { UserCircle, MessageSquare, Settings, LogOut } from 'lucide-react';
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
+  // Check if the user is logged in when the component mounts
   useEffect(() => {
-    // Check if token exists in localStorage
     const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token);
+    setIsLoggedIn(!!token); // If token exists, set logged in to true
   }, []);
 
-  const NavLinks = [
-    { title: 'Home', path: '/' },
-    { title: 'Discover', path: '/discover' },
-    { title: 'Movie Release', path: '/releases' },
-    { title: 'Forum', path: '/forum' },
-    { title: 'About', path: '/about' }
-  ];
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false); // Update state when logged out
+    window.location.href = '/login'; // Redirect to login page
+  };
 
   return (
-    <div className="p-2 flex justify-between text-center align-middle items-center">
-      <img
-        className="w-48 md:w-72"
-        src="https://see.fontimg.com/api/rf5/ZpJmK/ZWM1MTI5YzZkYjVlNGVmYTkzYTBjMjE3ODNmYTM0ZTcub3Rm/RmlsbSBWZXJzZQ/wood-carving.png?r=fs&h=81&w=1000&fg=FFFFFF&bg=353D4B&tb=1&s=81"
-        alt="Film Verse"
-      />
-
-      {/* Desktop Navigation */}
-      <div className="hidden md:flex md:pl-28 gap-4 md:space-x-7 justify-center items-center">
-        {NavLinks.map((link) => (
-          <Link key={link.path} to={link.path}>{link.title}</Link>
-        ))}
-      </div>
-
-      {/* Desktop Auth Section */}
-      <div className="hidden md:flex gap-4 items-center">
-        {!isLoggedIn && ( // Hide buttons if logged in
-          <>
-            <Link to="/signup" className="border p-2 rounded-md px-4 py-2">Sign up</Link>
-            <Link to="/login" className="bg-[#03A737] p-2 rounded-md px-4 py-2 text-white">Log in</Link>
-          </>
-        )}
-      </div>
-
-      {/* Mobile Menu Toggle */}
-      <div className="md:hidden text-2xl" onClick={toggleMenu}>
-        {isOpen ? <AiOutlineClose /> : <AiOutlineMenu />}
-      </div>
-
-      {/* Mobile Navigation Overlay */}
-      {isOpen && (
-        <div className="absolute top-20 left-0 w-full p-5 shadow-lg flex flex-col items-center bg-zinc-950 space-y-4 z-10">
-          {NavLinks.map((link) => (
-            <Link 
-              key={link.path} 
-              to={link.path} 
-              onClick={toggleMenu}
+    <nav className="bg-transparent p-4">
+      <div className="container mx-auto flex justify-between items-center">
+        <Link to="/" className="text-white text-2xl font-bold">
+          FilmVerse
+        </Link>
+        <div className="flex items-center space-x-6">
+          <Link to="/" className="text-white hover:text-purple-400 transition-colors">
+            Home
+          </Link>
+          <Link to="/clubs" className="text-white hover:text-purple-400 transition-colors">
+            Clubs
+          </Link>
+          <Link to="/forum" className="text-white hover:text-purple-400 transition-colors">
+            Forum
+          </Link>
+          <Link to="/influencer" className="text-white hover:text-purple-400 transition-colors">
+            Influencer
+          </Link>
+          <div className="relative">
+            <button
+              onClick={() => setShowDropdown(!showDropdown)}
+              className="text-white hover:text-purple-400 transition-colors"
             >
-              {link.title}
-            </Link>
-          ))}
-          <div className="flex gap-4 items-center">
-            {!isLoggedIn && ( // Hide buttons if logged in
-              <>
-                <Link to="/signup" className="border p-2 rounded-md px-4" onClick={toggleMenu}>Sign up</Link>
-                <Link to="/login" className="bg-green-500 p-2 rounded-md px-4 text-white" onClick={toggleMenu}>Log in</Link>
-              </>
+              <UserCircle size={24} />
+            </button>
+            {showDropdown && (
+              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg py-2 z-50">
+                {isLoggedIn ? (
+                  <>
+                    <Link
+                      to="/create-post"
+                      className="block px-4 py-2 text-white hover:bg-gray-700 flex items-center"
+                    >
+                      <MessageSquare size={18} className="mr-2" />
+                      Create Post
+                    </Link>
+                    <Link
+                      to="/update-profile"
+                      className="block px-4 py-2 text-white hover:bg-gray-700 flex items-center"
+                    >
+                      <Settings size={18} className="mr-2" />
+                      Update Profile
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-white hover:bg-gray-700 flex items-center"
+                    >
+                      <LogOut size={18} className="mr-2" />
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    to="/login"
+                    className="block px-4 py-2 text-white hover:bg-gray-700 flex items-center"
+                  >
+                    <LogOut size={18} className="mr-2" />
+                    Login
+                  </Link>
+                )}
+              </div>
             )}
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    </nav>
   );
 };
 
