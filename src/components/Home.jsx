@@ -451,76 +451,83 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Featured Section */}
         <section
-          style={{
-            backgroundImage: "url(https://pixeldemonmg.co.uk/cdn/shop/files/megalopolis-movie-poster.jpg?v=1725796570&width=1214)",
-            backgroundPosition: "center",
-            backgroundSize: "cover",
-          }}
-          className="relative w-full h-[40vh] sm:h-[60vh] p-4 sm:p-8 pl-4 sm:pl-16 flex items-center mt-8"
-        >
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+  style={{
+    backgroundImage: "url(https://pixeldemonmg.co.uk/cdn/shop/files/megalopolis-movie-poster.jpg?v=1725796570&width=1214)",
+    backgroundPosition: "center",
+    backgroundSize: "cover",
+  }}
+  className="relative w-full h-auto sm:h-[60vh] p-4 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center mt-8"
+>
+  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
 
-          <div className="relative flex flex-col lg:flex-row z-10 w-full items-start lg:items-center space-y-8 lg:space-y-0 lg:space-x-8">
-            <div className="text-white space-y-4 w-full lg:w-[60%]">
-              <h1 className="text-2xl sm:text-3xl font-semibold">Featured in Saintstream</h1>
-              <p className="text-base sm:text-lg">Best featured for you</p>
-              <h2 className="text-2xl sm:text-3xl font-bold font-serif">Air: Courting A Legend</h2>
+  <div className="relative flex flex-col lg:flex-row z-10 w-full items-start lg:items-center space-y-8 lg:space-y-0 lg:space-x-8">
+    <div className="text-white space-y-4 w-full lg:w-[60%]">
+      <h1 className="text-lg sm:text-2xl md:text-3xl font-semibold">
+        Featured in Saintstream
+      </h1>
+      <p className="text-sm sm:text-base md:text-lg">Best featured for you</p>
+      <h2 className="text-lg sm:text-2xl md:text-3xl font-bold font-serif">
+        Air: Courting A Legend
+      </h2>
 
-              <div className="flex flex-wrap items-center gap-2 text-gray-300 text-sm sm:text-base">
-                <span>⭐</span>
-                <span>|</span>
-                <h5>2h40m</h5>
-                <span>-</span>
-                <h5>Superhero</h5>
-                <span>-</span>
-                <h5>Action</h5>
-              </div>
+      <div className="flex flex-wrap items-center gap-2 text-gray-300 text-sm sm:text-base">
+        <span>⭐</span>
+        <span>|</span>
+        <h5>2h40m</h5>
+        <span>-</span>
+        <h5>Superhero</h5>
+        <span>-</span>
+        <h5>Action</h5>
+      </div>
 
-              <p className="text-gray-200 text-sm sm:text-lg font-serif line-clamp-3 sm:line-clamp-none">
-                Star Wars is an American epic space opera media franchise created by George Lucas, 
-                which began with the eponymous 1977 film and quickly became a worldwide pop culture phenomenon.
-              </p>
+      <p className="text-gray-200 text-sm sm:text-base md:text-lg font-serif line-clamp-3 sm:line-clamp-none">
+        Star Wars is an American epic space opera media franchise created by
+        George Lucas, which began with the eponymous 1977 film and quickly
+        became a worldwide pop culture phenomenon.
+      </p>
 
-              <div className="flex items-center space-x-4 pt-4">
-                <button className="flex items-center bg-[#03A737] text-white rounded-md px-3 sm:px-4 py-2 text-sm">
-                  <FaPlayCircle className="mr-2" /> Watch Now
-                </button>
-                <button className="flex items-center bg-transparent text-white px-3 sm:px-4 py-2 border rounded-md hover:bg-gray-500 text-sm">
-                  <CiBookmark className="mr-2" /> Add Watchlist
-                </button>
-              </div>
-            </div>
+      <div className="flex flex-wrap items-center space-x-4 pt-4">
+        <button className="flex items-center bg-[#03A737] text-white rounded-md px-3 sm:px-4 py-2 text-sm">
+          <FaPlayCircle className="mr-2" /> Watch Now
+        </button>
+        <button className="flex items-center bg-transparent text-white px-3 sm:px-4 py-2 border rounded-md hover:bg-gray-500 text-sm">
+          <CiBookmark className="mr-2" /> Add Watchlist
+        </button>
+      </div>
+    </div>
 
-            <div className="w-full lg:w-[40%] overflow-x-auto">
-              <div className="flex space-x-4">
-                {popularMoviesList.slice(0, 3).map((movie, index) => (
-                  <div
-                    key={index}
-                    className="w-40 sm:w-64 h-48 sm:h-80 rounded-lg overflow-hidden flex-shrink-0 relative"
-                    onClick={() => handleMovieClick(movie)}
-                  >
-                    <img
-                      className="rounded-lg w-full h-full object-cover"
-                      src={movie.posterUrl}
-                      alt={movie.title}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg">
-                      <div className="absolute bottom-4 left-4 text-white">
-                        <h1 className="text-base sm:text-xl font-semibold font-serif">{movie.title}</h1>
-                        <div className="flex items-center text-gray-400 gap-2 text-xs sm:text-sm">
-                          <span>⭐</span>
-                          <span>{movie.rating}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+    <div className="w-full lg:w-[40%] overflow-x-auto">
+      <div className="flex space-x-4">
+        {popularMoviesList.slice(0, 3).map((movie, index) => (
+          <div
+            key={index}
+            className="w-32 sm:w-48 md:w-64 h-40 sm:h-64 md:h-80 rounded-lg overflow-hidden flex-shrink-0 relative"
+            onClick={() => handleMovieClick(movie)}
+          >
+            <img
+              className="rounded-lg w-full h-full object-cover"
+              src={movie.posterUrl}
+              alt={movie.title}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-lg">
+              <div className="absolute bottom-4 left-4 text-white">
+                <h1 className="text-xs sm:text-sm md:text-lg font-semibold font-serif">
+                  {movie.title}
+                </h1>
+                <div className="flex items-center text-gray-400 gap-2 text-xs sm:text-sm">
+                  <span>⭐</span>
+                  <span>{movie.rating}</span>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
 <div>
       <Footer />
       </div>
