@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showSuccessToast, showErrorAlert } from '../utils/alert';
 import Navbar from './Navbar';
+import Footer from './Footer';
 
 const UpdateProfile = () => {
   const [formData, setFormData] = useState({
@@ -181,6 +182,7 @@ const UpdateProfile = () => {
           </form>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

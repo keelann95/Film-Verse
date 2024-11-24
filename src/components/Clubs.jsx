@@ -3,6 +3,7 @@ import { Users, UserPlus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { showAuthRequired, showSuccessToast, showErrorAlert } from '../utils/alert';
 import Navbar from './Navbar';
+import Footer from './Footer';
 
 const Clubs = () => {
   const [clubs, setClubs] = useState([]);
@@ -140,6 +141,7 @@ const Clubs = () => {
           })}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

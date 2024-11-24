@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MessageSquare, ThumbsUp, Send } from 'lucide-react';
 import { showErrorAlert, showSuccessToast } from '../utils/alert';
 import Navbar from './Navbar';
+import Footer from './Footer';
 
 const Forum = () => {
   const [posts, setPosts] = useState([]);
@@ -252,6 +253,7 @@ const Forum = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };

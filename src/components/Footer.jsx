@@ -1,44 +1,90 @@
-import React from 'react'
+import React from 'react';
 import { FaInstagram } from "react-icons/fa6";
 import { CiFacebook } from "react-icons/ci";
 import { BsTwitterX } from "react-icons/bs";
 import { FaGoogle } from "react-icons/fa";
 
-
 const Footer = () => {
+  const SocialIcon = ({ Icon }) => (
+    <div className="bg-slate-50 text-black p-1 rounded-lg hover:bg-slate-100 transition-colors">
+      <Icon size={20} />
+    </div>
+  );
+
   return (
-    <div className=' p-8 pl-16 flex justify-between'>
-      <div>
-        <h1 className=' font-medium'>Lorem ipsum dolor sit amet, consectetur  <br />adipisicing elit. Mollitia magnam numq <br /> uam aliquid dicta illum minima tem <br />poribus obcaecati </h1>
-        <p className=' pt-14'>
-            <div className=' font-serif flex gap-5 text-gray-300 '>
-                <h5>Privacy Policy</h5>
-                <h5> Term of service</h5>
-                <h5> Language</h5>
+    <div className="p-4 md:p-8 md:pl-16">
+      {/* Main container */}
+      <div className="flex flex-col md:flex-row md:justify-between gap-8 md:gap-0">
+        {/* Left side */}
+        <div className="space-y-8 md:space-y-14">
+          {/* Text content */}
+          <h1 className="font-medium leading-relaxed md:leading-loose">
+            Lorem ipsum dolor sit amet, consectetur{' '}
+            <span className="hidden md:inline"><br /></span>
+            adipisicing elit. Mollitia magnam numq{' '}
+            <span className="hidden md:inline"><br /></span>
+            uam aliquid dicta illum minima tem{' '}
+            <span className="hidden md:inline"><br /></span>
+            poribus obcaecati
+          </h1>
+
+          {/* Policy links */}
+          <div className="font-serif text-gray-300">
+            <div className="flex flex-wrap gap-3 md:gap-5">
+              <button className="hover:text-gray-100 transition-colors">
+                Privacy Policy
+              </button>
+              <button className="hover:text-gray-100 transition-colors">
+                Term of service
+              </button>
+              <button className="hover:text-gray-100 transition-colors">
+                Language
+              </button>
             </div>
-        </p>
-      </div>
-      <div>
-        <p>
-            <div className=' flex gap-2 font-serif text-gray-300'>
-                <h1>Home</h1>
-                <span>/</span>
-                <h1>Discover</h1>
-                <span>/</span>
-                <h1>Influence</h1>
-                <span>/</span>
-                <h1>Release</h1>
+          </div>
+        </div>
+
+        {/* Right side */}
+        <div className="space-y-8 md:space-y-14">
+          {/* Navigation */}
+          <div className="font-serif text-gray-300">
+            <div className="flex flex-wrap items-center">
+              <button className="hover:text-gray-100 transition-colors">
+                Home
+              </button>
+              <span className="px-2">/</span>
+              <button className="hover:text-gray-100 transition-colors">
+                Discover
+              </button>
+              <span className="px-2">/</span>
+              <button className="hover:text-gray-100 transition-colors">
+                Influence
+              </button>
+              <span className="px-2">/</span>
+              <button className="hover:text-gray-100 transition-colors">
+                Release
+              </button>
             </div>
-        </p>
-        <div className=' flex gap-5 pt-14 bg'>
-            <h1 className=' bg-slate-50 text-black p-1 rounded-lg'><FaInstagram /></h1>
-            <h1 className=' bg-slate-50 text-black p-1 rounded-lg'><CiFacebook /></h1>
-            <h1 className=' bg-slate-50 text-black p-1 rounded-lg'><BsTwitterX /></h1>
-            <h1 className=' bg-slate-50 text-black p-1 rounded-lg'><FaGoogle /></h1>
+          </div>
+
+          <div className="flex gap-5">
+            <button aria-label="Instagram" className="hover:transform hover:scale-105 transition-transform">
+              <SocialIcon Icon={FaInstagram} />
+            </button>
+            <button aria-label="Facebook" className="hover:transform hover:scale-105 transition-transform">
+              <SocialIcon Icon={CiFacebook} />
+            </button>
+            <button aria-label="Twitter" className="hover:transform hover:scale-105 transition-transform">
+              <SocialIcon Icon={BsTwitterX} />
+            </button>
+            <button aria-label="Google" className="hover:transform hover:scale-105 transition-transform">
+              <SocialIcon Icon={FaGoogle} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

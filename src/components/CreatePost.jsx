@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showSuccessToast, showErrorAlert } from '../utils/alert';
 import Navbar from './Navbar';
+import Footer from './Footer';
 
 const CreatePost = () => {
   const [formData, setFormData] = useState({
@@ -137,6 +138,7 @@ const CreatePost = () => {
           </form>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
