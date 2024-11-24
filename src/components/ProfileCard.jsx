@@ -1,10 +1,38 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Users, UserMinus, UserX } from 'lucide-react';
 
-const ProfileCard = ({ user, onUnfollow, onRemoveFollower }) => {
-  const [viewType, setViewType] = useState(null); // 'followers' or 'following'
+const ProfileCard = ({ user, onUnfollow, onRemoveFollower, suggestedUsers }) => {
+  const [viewType, setViewType] = useState('following'); // Start with following list
+  const [userList, setUserList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); // Current page
+  const [usersPerPage] = useState(5); // Number of users to display per page
+  const [isModalOpen, setIsModalOpen] = useState(false); // To control modal visibility
 
+  // Fetch user list when viewType or page changes
+  useEffect(() => {
+    const fetchUserList = async () => {
+      const token = localStorage.getItem('token');
+      const url = viewType === 'following' ? 'following' : 'followers';
+      try {
+        const response = await fetch(`http://127.0.0.1:5555/${url}?page=${currentPage}&limit=${usersPerPage}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        if (response.ok) {
+          setUserList(data);
+        }
+      } catch (error) {
+        console.error('Error fetching user list:', error);
+      }
+    };
+
+    fetchUserList();
+  }, [viewType, currentPage, usersPerPage]);
+
+  // Handle unfollow action
   const handleUnfollow = async (userId) => {
     try {
       const token = localStorage.getItem('token');
@@ -17,12 +45,14 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower }) => {
       });
 
       if (!response.ok) throw new Error('Failed to unfollow user');
-      onUnfollow?.(userId);
+      onUnfollow?.(userId); // Callback to remove from parent
+      setIsModalOpen(false); // Close modal after action
     } catch (error) {
       console.error('Error unfollowing user:', error);
     }
   };
 
+  // Handle remove follower action
   const handleRemoveFollower = async (userId) => {
     try {
       const token = localStorage.getItem('token');
@@ -35,15 +65,17 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower }) => {
       });
 
       if (!response.ok) throw new Error('Failed to remove follower');
-      onRemoveFollower?.(userId);
+      onRemoveFollower?.(userId); // Callback to remove from parent
+      setIsModalOpen(false); // Close modal after action
     } catch (error) {
       console.error('Error removing follower:', error);
     }
   };
 
+  // Render user list in modal
   const renderUserList = (list, isFollowers) => (
     <div className="space-y-4">
-      {list?.length > 0 ? (
+      {list.length > 0 ? (
         list.map((person) => (
           <div
             key={person.id}
@@ -87,53 +119,89 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower }) => {
     </div>
   );
 
+  const handlePageChange = (page) => {
+    if (page > 0) {
+      setCurrentPage(page);
+    }
+  };
+
+  // Modal toggling and content rendering
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
   return (
-    <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 mb-8 border border-gray-700/50">
-      <div className="flex items-center gap-6">
-        <img
-          src={user.profile_picture || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3"}
-          alt={user.username}
-          className="w-24 h-24 rounded-full object-cover border-2 border-purple-500"
-        />
-        <div>
-          <h2 className="text-2xl font-bold text-white mb-2">{user.username}</h2>
-          <div className="flex gap-6">
-            <button
-              onClick={() => setViewType('followers')}
-              className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
-            >
-              <Users size={20} />
-              <span>{user.followers_count} Followers</span>
-            </button>
-            <button
-              onClick={() => setViewType('following')}
-              className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
-            >
-              <Users size={20} />
-              <span>{user.following_count} Following</span>
-            </button>
+    <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 mb-8 border border-gray-600 relative">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-4">
+          <img
+            src={user.profile_picture || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3"}
+            alt="Profile"
+            className="w-16 h-16 rounded-full object-cover"
+          />
+          <div>
+            <h2 className="text-white font-bold">{user.username}</h2>
+            <p className="text-gray-400">{user.bio}</p>
+            <div className="flex items-center gap-4 mt-2">
+              <span className="text-white">{user.followers_count} Followers</span>
+              <span className="text-white">{user.following_count} Following</span>
+            </div>
           </div>
+        </div>
+        <div>
+          <button
+            onClick={() => {
+              setViewType('followers');
+              toggleModal();
+            }}
+            className={`px-4 py-2 rounded ${viewType === 'followers' ? 'bg-blue-600' : 'bg-gray-600'}`}
+          >
+            Followers
+          </button>
+          <button
+            onClick={() => {
+              setViewType('following');
+              toggleModal();
+            }}
+            className={`px-4 py-2 rounded ${viewType === 'following' ? 'bg-blue-600' : 'bg-gray-600'}`}
+          >
+            Following
+          </button>
         </div>
       </div>
 
-      {/* Modal for Followers or Following */}
-      {viewType && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-xl p-6 w-full max-w-md max-h-[80vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-white">
-                {viewType === 'followers' ? 'Followers' : 'Following'}
-              </h3>
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50">
+          <div className="bg-gray-800 p-6 rounded-lg w-96 max-w-full">
+            <h3 className="text-white font-bold text-lg">{viewType === 'followers' ? 'Followers' : 'Following'}</h3>
+
+            <div className="mt-4">
+              {renderUserList(userList, viewType === 'followers')}
+            </div>
+
+            <div className="flex justify-between mt-4">
               <button
-                onClick={() => setViewType(null)}
-                className="text-gray-400 hover:text-white"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage <= 1}
+                className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 text-white"
               >
-                ✕
+                Previous
+              </button>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 text-white"
+              >
+                Next
               </button>
             </div>
-            {viewType === 'followers'
-              ? renderUserList(user.followers, true)
-              : renderUserList(user.following, false)}
+
+            <button
+              onClick={toggleModal}
+              className="absolute top-2 right-2 p-2 text-white bg-red-600 rounded-full hover:bg-red-700"
+            >
+              X
+            </button>
           </div>
         </div>
       )}
