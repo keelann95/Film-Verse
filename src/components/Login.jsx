@@ -13,7 +13,7 @@ function Login() {
     setLoading(true);
   
     try {
-      const response = await fetch('http://127.0.0.1:5555/login', {
+      const response = await fetch('https://film-verse-backend.onrender.com/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -27,7 +27,6 @@ function Login() {
         throw new Error('Login failed');
       }
 
-      // Store token and user ID
       localStorage.setItem('token', data.token);
       localStorage.setItem('userId', data.user.id.toString());
       

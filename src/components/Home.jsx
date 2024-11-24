@@ -32,7 +32,7 @@ const Home = () => {
     
     const fetchMovies = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5555/trending');
+        const response = await fetch('https://film-verse-backend.onrender.com/trending');
         const data = await response.json();
         
         const transformedMovies = data.map((movie) => ({
@@ -78,7 +78,7 @@ const Home = () => {
   useEffect(() => {
     const fetchPopularMovies = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5555/popular');
+        const response = await fetch('https://film-verse-backend.onrender.com/popular');
         const data = await response.json();
   
         const transformedPopularMovies = data.map((movie) => ({
@@ -103,7 +103,7 @@ const Home = () => {
   useEffect(() => {
     const fetchUpcomingMovies = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5555/upcoming');
+        const response = await fetch('https://film-verse-backend.onrender.com/upcoming');
         const data = await response.json();
   
         const transformedUpcomingMovies = data.map((movie) => ({
@@ -126,7 +126,7 @@ const Home = () => {
   useEffect(() => {
     const fetchPopularMovies = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5555/popular');
+        const response = await fetch('https://film-verse-backend.onrender.com/popular');
         const movieData = await response.json();
   
         const formattedMovies = movieData.map((movie) => ({
@@ -149,7 +149,7 @@ const Home = () => {
   useEffect(() => {
     const fetchFeaturedMovies = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5555/popular');
+        const response = await fetch('https://film-verse-backend.onrender.com/popular');
         const moviesData = await response.json();
   
         const formattedMovies = moviesData.map((movie) => ({
@@ -172,7 +172,7 @@ const Home = () => {
   useEffect(() => {
     const fetchMoreMovies = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5555/popular');
+        const response = await fetch('https://film-verse-backend.onrender.com/popular');
         const movieData = await response.json();
   
         const formattedMovies = movieData.map((movie) => ({
@@ -195,7 +195,7 @@ const Home = () => {
   useEffect(() => {
     const fetchTopRatedTVSeries = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5555/tv-series');
+        const response = await fetch('https://film-verse-backend.onrender.com/tv-series');
         const tvSeriesData = await response.json();
   
         const formattedSeries = tvSeriesData.map((series) => ({
@@ -218,7 +218,7 @@ const Home = () => {
   useEffect(() => {
     const fetchMoviesOnAwards = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5555/trending");
+        const response = await fetch("https://film-verse-backend.onrender.com/trending");
         const moviesResponseData = await response.json();
 
         const filteredMovies = moviesResponseData.slice(100, 200);
@@ -243,7 +243,7 @@ const Home = () => {
   useEffect(() => {
     const fetchHighlightedMovies = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5555/trending');
+        const response = await fetch('https://film-verse-backend.onrender.com/trending');
         const data = await response.json();
 
         const transformedMovies = data.map((movie) => ({
@@ -266,12 +266,11 @@ const Home = () => {
 
   
   const handleMovieClick = (movie) => {
-    // Generalize the movie data by checking if keys exist
     const movieData = {
-      movie_name: movie.movie_name || movie.title,  // Use either `movie_name` or `title`
-      title: movie.movie_name || movie.title,  // Same for `title`
-      backgroundImage: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  // Fallback to placeholder
-      posterUrl: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  // Fallback to placeholder
+      movie_name: movie.movie_name || movie.title,  
+      title: movie.movie_name || movie.title, 
+      backgroundImage: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080", 
+      posterUrl: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  
       rating: movie.rating,
       runtime: movie.runtime,
       release_date: movie.release_date,
@@ -279,7 +278,6 @@ const Home = () => {
       overview: movie.overview
     };
   
-    // Navigate to the movie details page, passing movie data
     navigate(`/movie/${encodeURIComponent(movie.movie_name || movie.title)}`, {
       state: movieData
     });
@@ -290,7 +288,6 @@ const Home = () => {
   return (
     <>
       <main className='p-2 md:p-5'>
-        {/* Hero Section */}
         <section 
           className="relative h-[50vh] md:h-[80vh] w-full overflow-hidden" 
           style={{
@@ -356,7 +353,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Just Released Section */}
         <header className="p-4 sm:p-8 text-xl sm:text-2xl font-semibold pl-4 sm:pl-16">
           Just Released
         </header>
@@ -400,7 +396,6 @@ const Home = () => {
           ))}
         </section>
 
-        {/* Popular of the Week Section */}
         <header className="p-4 sm:p-8 text-xl sm:text-2xl font-semibold pl-4 sm:pl-16">
           Popular of the Week
         </header>

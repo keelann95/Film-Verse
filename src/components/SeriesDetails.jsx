@@ -13,7 +13,7 @@ const SeriesDetails = () => {
   useEffect(() => {
     const fetchSeriesDetails = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:5555/tv-series/${id}`);
+        const response = await fetch(`https://film-verse-backend.onrender.com/tv-series/${id}`);
         if (!response.ok) throw new Error('Failed to fetch series details');
         const data = await response.json();
         setSeries(data);
@@ -30,7 +30,7 @@ const SeriesDetails = () => {
   const fetchSeasonEpisodes = async (seasonNumber) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5555/tv_series/${id}/season/${seasonNumber}/episodes`
+        `https://film-verse-backend.onrender.com/tv_series/${id}/season/${seasonNumber}/episodes`
       );
       if (!response.ok) throw new Error('Failed to fetch episodes');
       const data = await response.json();
@@ -60,7 +60,6 @@ const SeriesDetails = () => {
     <div className="min-h-screen bg-[#0a0a0a]">
       <Navbar />
       
-      {/* Hero Section */}
       <div 
         className="relative h-[70vh] w-full"
         style={{
@@ -119,7 +118,6 @@ const SeriesDetails = () => {
         </div>
       </div>
 
-      {/* Seasons Section */}
       <div className="container mx-auto px-4 py-12">
         <h2 className="text-2xl font-bold text-white mb-6">Seasons</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

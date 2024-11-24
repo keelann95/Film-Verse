@@ -17,7 +17,7 @@ const CreatePost = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5555/popular');
+        const response = await fetch('https://film-verse-backend.onrender.com/popular');
         if (!response.ok) throw new Error('Failed to fetch movies');
         const data = await response.json();
         setMovies(data);
@@ -46,7 +46,7 @@ const CreatePost = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://127.0.0.1:5555/posts', {
+      const response = await fetch('https://film-verse-backend.onrender.com/posts', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -54,7 +54,6 @@ export const showInfoAlert = (message) => {
   });
 };
 
-// Auth specific alerts
 export const showLoginSuccess = (username) => {
   return showSuccessAlert(`Welcome back, ${username}!`, 2000);
 };
@@ -93,7 +92,6 @@ export const showLogoutSuccess = () => {
   return showSuccessToast('You have been logged out successfully');
 };
 
-// Follow system alerts
 export const showFollowSuccess = (username) => {
   return showSuccessToast(`You are now following ${username}`);
 };
@@ -102,7 +100,6 @@ export const showFollowError = () => {
   return showErrorAlert('Unable to follow user. Please try again later.');
 };
 
-// Movie alerts
 export const showMovieUnavailable = () => {
   return showInfoAlert('Video link not available for this movie');
 };

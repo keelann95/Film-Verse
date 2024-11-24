@@ -19,7 +19,7 @@ const InfluencerPage = () => {
   const [modalView, setModalView] = useState(null); // 'followers' or 'following' or null
   const navigate = useNavigate();
 
-  const API_BASE_URL = 'http://127.0.0.1:5555';
+  const API_BASE_URL = 'https://film-verse-backend.onrender.com';
 
   const fetchData = async () => {
     try {
@@ -49,7 +49,6 @@ const InfluencerPage = () => {
       setFollowers(followersData);
       setFollowing(followingData);
 
-      // Filter out users that are already being followed
       const followingIds = followingData.map(user => user.id);
       const filteredUsers = users.filter(user => 
         user.id !== profile.id && !followingIds.includes(user.id)
@@ -92,7 +91,6 @@ const InfluencerPage = () => {
 
       if (!response.ok) throw new Error('Failed to follow user');
 
-      // After following, refetch the data to refresh suggested users
       await fetchData();
     } catch (error) {
       console.error('Error following user:', error);
@@ -112,7 +110,6 @@ const InfluencerPage = () => {
 
       if (!response.ok) throw new Error('Failed to unfollow user');
 
-      // After unfollowing, refetch the data to refresh the state
       await fetchData();
     } catch (error) {
       console.error('Error unfollowing user:', error);

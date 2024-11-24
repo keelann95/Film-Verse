@@ -24,7 +24,7 @@ const ClubDetails = () => {
       try {
         setLoading(true);
 
-        const response = await fetch(`http://127.0.0.1:5555/movie-clubs/${id}`, {
+        const response = await fetch(`https://film-verse-backend.onrender.com/movie-clubs/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -42,7 +42,7 @@ const ClubDetails = () => {
         const clubData = await response.json();
         setClub(clubData);
 
-        const memberResponse = await fetch(`http://127.0.0.1:5555/movie-clubs/${id}/members`, {
+        const memberResponse = await fetch(`https://film-verse-backend.onrender.com/movie-clubs/${id}/members`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -74,7 +74,7 @@ const ClubDetails = () => {
 
     try {
       const method = isMember ? 'DELETE' : 'POST';
-      const response = await fetch(`http://127.0.0.1:5555/movie-clubs/${id}/members`, {
+      const response = await fetch(`https://film-verse-backend.onrender.com/movie-clubs/${id}/members`, {
         method: method,
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -85,8 +85,7 @@ const ClubDetails = () => {
         setIsMember(!isMember);
         showSuccessToast(isMember ? 'You left the club' : 'You joined the club');
         
-        // Refresh the page to reflect changes
-        window.location.reload(); // This will reload the page after the action
+        window.location.reload();
       } else {
         throw new Error('Failed to update membership');
       }

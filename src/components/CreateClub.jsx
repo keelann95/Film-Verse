@@ -13,7 +13,6 @@ const CreateClub = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Fetch genres from the backend
   useEffect(() => {
     const fetchGenres = async () => {
       const token = localStorage.getItem('token');
@@ -24,7 +23,7 @@ const CreateClub = () => {
       }
 
       try {
-        const response = await fetch('http://127.0.0.1:5555/genres', {
+        const response = await fetch('https://film-verse-backend.onrender.com/genres', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -50,7 +49,6 @@ const CreateClub = () => {
     fetchGenres();
   }, [navigate]);
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
@@ -62,7 +60,7 @@ const CreateClub = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://127.0.0.1:5555/movie-clubs', {
+      const response = await fetch('https://film-verse-backend.onrender.com/movie-clubs', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

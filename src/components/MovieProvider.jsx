@@ -8,7 +8,6 @@ export const MovieProvider = ({ children }) => {
 
   const addToWatchlist = (movie) => {
     setWatchlist(prev => {
-      // Check if movie already exists in watchlist
       if (prev.some(m => m.movie_name === movie.movie_name || m.title === movie.title)) {
         return prev;
       }
@@ -26,7 +25,6 @@ export const MovieProvider = ({ children }) => {
 
   const addToLikedMovies = (movie) => {
     setLikedMovies(prev => {
-      // Check if movie already exists in liked movies
       if (prev.some(m => m.movie_name === movie.movie_name || m.title === movie.title)) {
         return prev;
       }

@@ -6,21 +6,20 @@ const PostCard = ({ post, onCommentSubmit }) => {
   const [commentContent, setCommentContent] = useState('');
   const [toastMessage, setToastMessage] = useState('');
 
-  // Handle Comment Submission
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!commentContent.trim()) {
-      return; // Prevent empty comment submission
+      return; 
     }
 
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('User not logged in');
-      return; // User should be logged in to comment
+      return;
     }
 
     try {
-      const response = await fetch(`http://127.0.0.1:5555/posts/${post.id}/comments`, {
+      const response = await fetch(`https://film-verse-backend.onrender.com/posts/${post.id}/comments`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -34,11 +33,10 @@ const PostCard = ({ post, onCommentSubmit }) => {
       }
 
       const newComment = await response.json();
-      onCommentSubmit(post.id, newComment); // Pass post ID and new comment to parent component
-      setCommentContent(''); // Reset comment input after submission
+      onCommentSubmit(post.id, newComment);
+      setCommentContent('');
       setToastMessage('Your comment has been added');
       
-      // Show the toast message for a few seconds and then hide it
       setTimeout(() => {
         setToastMessage('');
       }, 3000);
@@ -88,7 +86,6 @@ const PostCard = ({ post, onCommentSubmit }) => {
         <button type="submit" className="bg-purple-600 text-white px-4 py-2 rounded-lg">Post</button>
       </form>
 
-      {/* Toast message display */}
       {toastMessage && (
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-purple-600 text-white px-4 py-2 rounded-lg shadow-lg">
           {toastMessage}

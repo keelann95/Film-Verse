@@ -3,19 +3,18 @@ import React, { useState, useEffect } from 'react';
 import { Users, UserMinus, UserX } from 'lucide-react';
 
 const ProfileCard = ({ user, onUnfollow, onRemoveFollower, suggestedUsers }) => {
-  const [viewType, setViewType] = useState('following'); // Start with following list
+  const [viewType, setViewType] = useState('following'); 
   const [userList, setUserList] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1); // Current page
-  const [usersPerPage] = useState(5); // Number of users to display per page
-  const [isModalOpen, setIsModalOpen] = useState(false); // To control modal visibility
+  const [currentPage, setCurrentPage] = useState(1);
+  const [usersPerPage] = useState(5);
+  const [isModalOpen, setIsModalOpen] = useState(false); 
 
-  // Fetch user list when viewType or page changes
   useEffect(() => {
     const fetchUserList = async () => {
       const token = localStorage.getItem('token');
       const url = viewType === 'following' ? 'following' : 'followers';
       try {
-        const response = await fetch(`http://127.0.0.1:5555/${url}?page=${currentPage}&limit=${usersPerPage}`, {
+        const response = await fetch(`https://film-verse-backend.onrender.com/${url}?page=${currentPage}&limit=${usersPerPage}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -32,11 +31,10 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower, suggestedUsers }) => 
     fetchUserList();
   }, [viewType, currentPage, usersPerPage]);
 
-  // Handle unfollow action
   const handleUnfollow = async (userId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://127.0.0.1:5555/unfollow/${userId}`, {
+      const response = await fetch(`https://film-verse-backend.onrender.com/unfollow/${userId}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -45,18 +43,17 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower, suggestedUsers }) => 
       });
 
       if (!response.ok) throw new Error('Failed to unfollow user');
-      onUnfollow?.(userId); // Callback to remove from parent
-      setIsModalOpen(false); // Close modal after action
+      onUnfollow?.(userId); 
+      setIsModalOpen(false);
     } catch (error) {
       console.error('Error unfollowing user:', error);
     }
   };
 
-  // Handle remove follower action
   const handleRemoveFollower = async (userId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://127.0.0.1:5555/remove-follower/${userId}`, {
+      const response = await fetch(`https://film-verse-backend.onrender.com/remove-follower/${userId}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -65,14 +62,13 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower, suggestedUsers }) => 
       });
 
       if (!response.ok) throw new Error('Failed to remove follower');
-      onRemoveFollower?.(userId); // Callback to remove from parent
-      setIsModalOpen(false); // Close modal after action
+      onRemoveFollower?.(userId); 
+      setIsModalOpen(false); 
     } catch (error) {
       console.error('Error removing follower:', error);
     }
   };
 
-  // Render user list in modal
   const renderUserList = (list, isFollowers) => (
     <div className="space-y-4">
       {list.length > 0 ? (
@@ -102,15 +98,15 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower, suggestedUsers }) => 
               </button>
             ) : (
               <button
-              onClick={() => {
-                handleUnfollow(person.id);
-                window.location.reload(); // Refreshes the page
-              }}
-              className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition-colors"
-            >
-              <UserMinus size={16} />
-              Unfollow
-            </button>
+                onClick={() => {
+                  handleUnfollow(person.id);
+                  window.location.reload(); 
+                }}
+                className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition-colors"
+              >
+                <UserMinus size={16} />
+                Unfollow
+              </button>
             )}
           </div>
         ))
@@ -128,7 +124,6 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower, suggestedUsers }) => 
     }
   };
 
-  // Modal toggling and content rendering
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
@@ -151,7 +146,7 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower, suggestedUsers }) => 
             </div>
           </div>
         </div>
-        <div className='  space-x-6'>
+        <div className="space-x-6">
           <button
             onClick={() => {
               setViewType('followers');
@@ -173,10 +168,9 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower, suggestedUsers }) => 
         </div>
       </div>
 
-      {/* Modal */}
       {isModalOpen && (
-        <div className=" inset-0 relative flex items-center justify-center bg-gray-900 bg-opacity-75 z-50">
-          <div className="bg-zinc-950  p-6 rounded-lg w-96 max-w-full">
+        <div className="inset-0 relative flex items-center justify-center bg-gray-900 bg-opacity-75 z-50">
+          <div className="bg-zinc-950 p-6 rounded-lg w-96 max-w-full">
             <h3 className="text-white font-bold text-lg">{viewType === 'followers' ? 'Followers' : 'Following'}</h3>
 
             <div className="mt-4">

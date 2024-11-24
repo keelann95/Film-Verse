@@ -26,7 +26,7 @@ const UpdateProfile = () => {
       }
 
       try {
-        const response = await fetch(`http://127.0.0.1:5555/users/${userId}`, {
+        const response = await fetch(`https://film-verse-backend.onrender.com/users/${userId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -70,7 +70,7 @@ const UpdateProfile = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(`http://127.0.0.1:5555/users/${userId}`, {
+      const response = await fetch(`https://film-verse-backend.onrender.com/users/${userId}`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -95,7 +95,6 @@ const UpdateProfile = () => {
 
       const updatedUser = await response.json();
       
-      // Update local storage with new user data
       localStorage.setItem('user', JSON.stringify(updatedUser));
       
       showSuccessToast('Profile updated successfully');

@@ -17,7 +17,7 @@ const Clubs = () => {
   useEffect(() => {
     const fetchGenres = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5555/genres');  
+        const response = await fetch('https://film-verse-backend.onrender.com/genres');  
         if (!response.ok) {
           throw new Error('Failed to fetch genres');
         }
@@ -41,7 +41,7 @@ const Clubs = () => {
       }
 
       try {
-        const response = await fetch('http://127.0.0.1:5555/movie-clubs', {
+        const response = await fetch('https://film-verse-backend.onrender.com/movie-clubs', {
           headers: {
             'Authorization': `Bearer ${token}`
           }

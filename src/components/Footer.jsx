@@ -13,11 +13,8 @@ const Footer = () => {
 
   return (
     <div className="p-4 md:p-8 md:pl-16">
-      {/* Main container */}
       <div className="flex flex-col md:flex-row md:justify-between gap-8 md:gap-0">
-        {/* Left side */}
         <div className="space-y-8 md:space-y-14">
-          {/* Text content */}
           <h1 className="font-medium leading-relaxed md:leading-loose">
             Lorem ipsum dolor sit amet, consectetur{' '}
             <span className="hidden md:inline"><br /></span>
@@ -28,7 +25,6 @@ const Footer = () => {
             poribus obcaecati
           </h1>
 
-          {/* Policy links */}
           <div className="font-serif text-gray-300">
             <div className="flex flex-wrap gap-3 md:gap-5">
               <button className="hover:text-gray-100 transition-colors">
@@ -44,9 +40,7 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Right side */}
         <div className="space-y-8 md:space-y-14">
-          {/* Navigation */}
           <div className="font-serif text-gray-300">
             <div className="flex flex-wrap items-center">
               <button className="hover:text-gray-100 transition-colors">

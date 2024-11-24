@@ -11,7 +11,6 @@ const Navbar = () => {
     const token = localStorage.getItem('token');
     setIsLoggedIn(!!token);
 
-    // Close mobile menu on resize
     const handleResize = () => {
       if (window.innerWidth >= 768) {
         setIsMobileMenuOpen(false);
@@ -57,7 +56,6 @@ const Navbar = () => {
           FilmVerse
         </Link>
 
-        {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-6">
           <NavLinks />
           <div className="relative">
@@ -113,7 +111,6 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Menu Button */}
         <button
           className="md:hidden text-white hover:text-purple-400 transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -122,7 +119,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-gray-800 p-4 space-y-4 z-50">
           <div className="flex flex-col space-y-4">

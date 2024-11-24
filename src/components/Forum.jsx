@@ -25,7 +25,7 @@ const Forum = () => {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:5555/posts', {
+      const response = await fetch('https://film-verse-backend.onrender.com/posts', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -52,7 +52,7 @@ const Forum = () => {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:5555/posts/${postId}/like`,
+        `https://film-verse-backend.onrender.com/posts/${postId}/like`,
         {
           method: 'POST',
           headers: {
@@ -91,7 +91,7 @@ const Forum = () => {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:5555/posts/${postId}/comments`,
+        `https://film-verse-backend.onrender.com/posts/${postId}/comments`,
         {
           method: 'POST',
           headers: {

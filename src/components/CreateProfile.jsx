@@ -7,7 +7,7 @@ export default function CreateProfile() {
     username: '',
     email: '',
     bio: '',
-    password: '', // Added password field
+    password: '',
     profile_picture: 'default_profile_picture.jpg'
   });
 
@@ -31,10 +31,9 @@ export default function CreateProfile() {
     setIsLoading(true);
 
     try {
-      // Validate form data
       validateForm();
 
-      const response = await fetch('http://127.0.0.1:5555/signup', {
+      const response = await fetch('https://film-verse-backend.onrender.com/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,12 +47,10 @@ export default function CreateProfile() {
         throw new Error(data.error || 'Failed to create profile');
       }
 
-      // Store the token if it's returned
       if (data.token) {
         localStorage.setItem('token', data.token);
       }
 
-      // Show success message
       await Swal.fire({
         title: 'Profile Created!',
         text: 'Welcome to Film Verse!',
@@ -63,7 +60,6 @@ export default function CreateProfile() {
         timerProgressBar: true
       });
 
-      // Redirect to influencer page
       navigate('/influencer');
 
     } catch (error) {

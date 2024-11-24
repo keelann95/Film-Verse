@@ -16,7 +16,7 @@ function Signup() {
     setLoading(true);
     
     try {
-      const response = await fetch('http://127.0.0.1:5555/signup', {
+      const response = await fetch('https://film-verse-backend.onrender.com/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -28,7 +28,6 @@ function Signup() {
         throw new Error(data.error || 'Signup failed');
       }
 
-      // Store token and user ID
       localStorage.setItem('token', data.token);
       localStorage.setItem('userId', data.user.id.toString());
 

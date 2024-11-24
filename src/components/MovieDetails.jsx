@@ -19,7 +19,6 @@ const MovieDetails = () => {
     removeFromLikedMovies 
   } = useMovieContext();
   
-  // Check if movie is in watchlist/liked movies on component mount
   const [isWatchlisted, setIsWatchlisted] = useState(
     watchlist.some(m => m.movie_name === movie?.movie_name || m.title === movie?.title)
   );
@@ -56,7 +55,7 @@ const MovieDetails = () => {
   };
 
   useEffect(() => {
-    console.log("Movie data received:", movie); // Debug log
+    console.log("Movie data received:", movie);
   }, [movie]);
 
   if (!movie) {
@@ -81,7 +80,7 @@ const MovieDetails = () => {
         }));
   
         const limitedAndSkippedUpcomingMovies = transformedUpcomingMovies.slice(skip, skip + limit);
-        setUpcomingMovies(limitedAndSkippedUpcomingMovies); // Set upcoming movies in state
+        setUpcomingMovies(limitedAndSkippedUpcomingMovies); 
       } catch (error) {
         console.error("Error fetching upcoming movies:", error);
       }
@@ -93,12 +92,11 @@ const MovieDetails = () => {
 
   
   const handleMovieClick = (movie) => {
-    // Generalize the movie data by checking if keys exist
     const movieData = {
-      movie_name: movie.movie_name || movie.title,  // Use either `movie_name` or `title`
-      title: movie.movie_name || movie.title,  // Same for `title`
-      backgroundImage: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  // Fallback to placeholder
-      posterUrl: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  // Fallback to placeholder
+      movie_name: movie.movie_name || movie.title, 
+      title: movie.movie_name || movie.title,  
+      backgroundImage: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  
+      posterUrl: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  
       rating: movie.rating,
       runtime: movie.runtime,
       release_date: movie.release_date,
@@ -106,7 +104,6 @@ const MovieDetails = () => {
       overview: movie.overview
     };
   
-    // Navigate to the movie details page, passing movie data
     navigate(`/movie/${encodeURIComponent(movie.movie_name || movie.title)}`, {
       state: movieData
     });
