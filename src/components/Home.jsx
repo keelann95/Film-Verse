@@ -265,14 +265,26 @@ const Home = () => {
   }, []);
 
   
- const handleMovieClick = (movie) => {
-    const movieId = movie.id || movie.movie_id;
-    if (movieId) {
-      navigate(`/movie/:id`);
-    } else {
-      console.error('Movie ID not found:', movie);
-    }
+  const handleMovieClick = (movie) => {
+    // Generalize the movie data by checking if keys exist
+    const movieData = {
+      movie_name: movie.movie_name || movie.title,  // Use either `movie_name` or `title`
+      title: movie.movie_name || movie.title,  // Same for `title`
+      backgroundImage: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  // Fallback to placeholder
+      posterUrl: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  // Fallback to placeholder
+      rating: movie.rating,
+      runtime: movie.runtime,
+      release_date: movie.release_date,
+      genres: movie.name,
+      overview: movie.overview
+    };
+  
+    // Navigate to the movie details page, passing movie data
+    navigate(`/movie/${encodeURIComponent(movie.movie_name || movie.title)}`, {
+      state: movieData
+    });
   };
+  
   
 
   return (

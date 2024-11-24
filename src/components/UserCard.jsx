@@ -7,7 +7,7 @@ const UserCard = ({ user, actionLabel, onAction, isFollowing }) => {
     <div className="flex items-center justify-between bg-gray-800/50 backdrop-blur-sm p-3 sm:p-4 rounded-xl mb-3 border border-gray-700/50 hover:border-purple-500/50 transition-all">
       <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
         <img
-          src={user.profile_picture || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3"}
+          src={user.Profile_picture || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3"}
           alt={user.username}
           className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border border-gray-700 flex-shrink-0"
         />

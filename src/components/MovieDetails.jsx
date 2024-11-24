@@ -1,182 +1,238 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Play, Plus, Share2, Star } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import Footer from '../components/Footer'
+import { useMovieContext } from './MovieProvider';
+import { Play, Plus, Share2 } from 'react-feather';
 import Navbar from './Navbar';
-import { showMovieUnavailable } from '../utils/alert';
 
 const MovieDetails = () => {
-  const { id } = useParams();
+  const location = useLocation();
+  const movie = location.state;
   const navigate = useNavigate();
-  const [movie, setMovie] = useState(null);
-  const [actors, setActors] = useState([]);
-  const [similarMovies, setSimilarMovies] = useState([]);
+  const { 
+    watchlist, 
+    likedMovies, 
+    addToWatchlist, 
+    removeFromWatchlist,
+    addToLikedMovies,
+    removeFromLikedMovies 
+  } = useMovieContext();
+  
+  // Check if movie is in watchlist/liked movies on component mount
+  const [isWatchlisted, setIsWatchlisted] = useState(
+    watchlist.some(m => m.movie_name === movie?.movie_name || m.title === movie?.title)
+  );
+  const [isLiked, setIsLiked] = useState(
+    likedMovies.some(m => m.movie_name === movie?.movie_name || m.title === movie?.title)
+  );
+
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [upcomingMovies, setUpcomingMovies] = useState([]);
+  const limit = 10;
+  const skip = 10;
 
   useEffect(() => {
-    const fetchMovieDetails = async () => {
-      try {
-        const response = await fetch(`http://127.0.0.1:5555/movies/${id}/details`);
-        if (!response.ok) throw new Error('Failed to fetch movie details');
-        const data = await response.json();
-        
-        setMovie(data.movie);
-        setActors(data.actors);
-        setSimilarMovies(data.similar_movies);
-      } catch (error) {
-        console.error('Error fetching movie details:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    console.log("Movie data received:", movie);
+  }, [movie]);
 
-    fetchMovieDetails();
-  }, [id]);
+  const handleWatchlistToggle = () => {
+    if (isWatchlisted) {
+      removeFromWatchlist(movie);
+    } else {
+      addToWatchlist(movie);
+    }
+    setIsWatchlisted(!isWatchlisted);
+  };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="text-white text-xl">Loading movie details...</div>
-      </div>
-    );
-  }
+  const handleLikeToggle = () => {
+    if (isLiked) {
+      removeFromLikedMovies(movie);
+    } else {
+      addToLikedMovies(movie);
+    }
+    setIsLiked(!isLiked);
+  };
+
+  useEffect(() => {
+    console.log("Movie data received:", movie); // Debug log
+  }, [movie]);
 
   if (!movie) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="text-red-500 text-xl">Movie not found</div>
+      <div className="flex items-center justify-center h-screen bg-gray-900">
+        <h1 className="text-2xl text-white">Loading movie details...</h1>
       </div>
     );
   }
 
-  const handleWatchTrailer = () => {
-    if (movie.video) {
-      window.open(movie.video, '_blank');
-    } else {
-      showMovieUnavailable();
-    }
+  useEffect(() => {
+    const fetchUpcomingMovies = async () => {
+      try {
+        const response = await fetch('https://film-verse-backend.onrender.com/upcoming');
+        const data = await response.json();
+  
+        const transformedUpcomingMovies = data.map((movie) => ({
+          movie_name: movie.movie_name,
+          rating: movie.rating || "N/A",
+          genres: movie.name || [],
+          posterImage: movie.movie_picture || "/api/placeholder/1920/1080",
+        }));
+  
+        const limitedAndSkippedUpcomingMovies = transformedUpcomingMovies.slice(skip, skip + limit);
+        setUpcomingMovies(limitedAndSkippedUpcomingMovies); // Set upcoming movies in state
+      } catch (error) {
+        console.error("Error fetching upcoming movies:", error);
+      }
+    };
+  
+    fetchUpcomingMovies();
+  }, []);
+
+
+  
+  const handleMovieClick = (movie) => {
+    // Generalize the movie data by checking if keys exist
+    const movieData = {
+      movie_name: movie.movie_name || movie.title,  // Use either `movie_name` or `title`
+      title: movie.movie_name || movie.title,  // Same for `title`
+      backgroundImage: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  // Fallback to placeholder
+      posterUrl: movie.posterImage || movie.backgroundImage || "/api/placeholder/1920/1080",  // Fallback to placeholder
+      rating: movie.rating,
+      runtime: movie.runtime,
+      release_date: movie.release_date,
+      genres: movie.name,
+      overview: movie.overview
+    };
+  
+    // Navigate to the movie details page, passing movie data
+    navigate(`/movie/${encodeURIComponent(movie.movie_name || movie.title)}`, {
+      state: movieData
+    });
   };
+  
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      <Navbar />
-      
+    <div className="min-h-screen bg-gray-900">
       {/* Hero Section */}
+      
       <div 
         className="relative h-[70vh] w-full"
         style={{
-          backgroundImage: `url(${movie.movie_picture})`,
+          backgroundImage: `url(${movie.backgroundImage || movie.posterUrl || "/api/placeholder/1920/1080"})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
       >
-        <div className="absolute inset-0 bg-black/50"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-black/50"></div>
+         <div className="w-full absolute z-50">
+        <Navbar />
+      </div>
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.8) 100%)"
+          }}
+        ></div>
         
-        <div className="relative z-10 container mx-auto px-4 h-full flex items-end pb-16">
+        <div className="relative z-10 h-full container mx-auto px-4 flex items-end pb-16">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-              {movie.movie_name}
+              {movie.movie_name || movie.title}
             </h1>
-            
             <div className="flex items-center space-x-4 text-gray-300 mb-6">
-              <div className="flex items-center">
-                <Star className="w-5 h-5 text-yellow-500 mr-1" />
-                <span>{movie.rating}/10</span>
+              <span>⭐ {movie.rating || "N/A"}</span>
+              {movie.runtime && (
+                <>
+                  <span>•</span>
+                  <span>{movie.runtime}</span>
+                </>
+              )}
+              {movie.release_date && (
+                <>
+                  <span>•</span>
+                  <span>{movie.release_date}</span>
+                </>
+              )}
+            </div>
+            
+            {movie.genres && movie.genres.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-6">
+                {movie.genres.map((genre, index) => (
+                  <span 
+                    key={index}
+                    className="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300"
+                  >
+                    {genre}
+                  </span>
+                ))}
               </div>
-              <span>•</span>
-              <span>{movie.runtime} min</span>
-              <span>•</span>
-              <span>{movie.release_date}</span>
-            </div>
+            )}
 
-            <div className="flex flex-wrap gap-2 mb-6">
-              {movie.genres?.map((genre, index) => (
-                <span 
-                  key={index}
-                  className="px-3 py-1 bg-gray-800/80 rounded-full text-sm text-gray-300"
-                >
-                  {genre.name}
-                </span>
-              ))}
-            </div>
+<div className="flex flex-wrap gap-4 justify-a">
+       
+      
+        <button 
+          onClick={handleWatchlistToggle}
+          className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-6 py-3 rounded-lg font-medium transition-colors"
+        >
+          <Plus className="w-5 h-5" />
+          {isWatchlisted ? 'Remove from Watchlist' : 'Add to Watchlist'}
+        </button>
 
-            <p className="text-gray-300 mb-8 line-clamp-3 md:line-clamp-none">
-              {movie.overview}
-            </p>
+     
 
-            <div className="flex gap-4">
-              <button
-                onClick={handleWatchTrailer}
-                className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg transition-colors"
-              >
-                <Play className="w-5 h-5" />
-                Watch Trailer
-              </button>
-              <button
-                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-lg transition-colors"
-              >
-                <Plus className="w-5 h-5" />
-                Add to Watchlist
-              </button>
-              <button
-                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-lg transition-colors"
-              >
-                <Share2 className="w-5 h-5" />
-                Share
-              </button>
-            </div>
+        <button 
+          onClick={handleLikeToggle}
+          className={`flex items-center gap-2 ${
+            isLiked ? 'bg-red-500' : 'bg-white/10'
+          } hover:bg-white/20 backdrop-blur-sm px-6 py-3 rounded-lg font-medium transition-colors`}
+        >
+          <span className="w-5 h-5">❤️</span>
+          {isLiked ? 'Liked' : 'Like'}
+        </button>
+      </div>
           </div>
         </div>
       </div>
 
-      {/* Cast Section */}
-      <div className="container mx-auto px-4 py-12">
-        <h2 className="text-2xl font-bold text-white mb-6">Cast</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {actors.map((actor) => (
-            <div key={actor.id} className="group">
-              <div className="aspect-[2/3] rounded-lg overflow-hidden mb-2">
-                <img
-                  src={actor.picture || 'https://via.placeholder.com/300x450'}
-                  alt={actor.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              <h3 className="font-medium text-white">{actor.name}</h3>
-              <p className="text-sm text-gray-400">{actor.role}</p>
+
+
+      <div className="mb-4">
+        <h2 className="text-lg font-bold mb-2">Watchlist</h2>
+        <div className="grid grid-cols-5 gap-4">
+          {watchlist.map((movie, index) => (
+            <div key={index} className="flex flex-col items-center">
+              <img 
+                src={movie.backgroundImage || movie.posterUrl || "/api/placeholder/150/225"} 
+                alt={movie.movie_name || movie.title} 
+                className="w-full h-auto mb-2" 
+              />
+              <h3 className="text-center">{movie.movie_name || movie.title}</h3>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Similar Movies Section */}
-      <div className="container mx-auto px-4 py-12">
-        <h2 className="text-2xl font-bold text-white mb-6">Similar Movies</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {similarMovies.map((movie) => (
-            <div
-              key={movie.id}
-              onClick={() => navigate(`/movie/${movie.id}`)}
-              className="group cursor-pointer"
-            >
-              <div className="aspect-[2/3] rounded-lg overflow-hidden mb-2">
-                <img
-                  src={movie.movie_picture || 'https://via.placeholder.com/300x450'}
-                  alt={movie.movie_name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              <h3 className="font-medium text-white group-hover:text-purple-400 transition-colors">
-                {movie.movie_name}
-              </h3>
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <Star className="w-4 h-4 text-yellow-500" />
-                <span>{movie.rating}/10</span>
-              </div>
+      <div className="mb-4">
+        <h2 className="text-lg font-bold mb-2">Liked Movies</h2>
+        <div className="grid grid-cols-5 gap-4">
+          {likedMovies.map((movie, index) => (
+            <div key={index} className="flex flex-col items-center">
+              <img 
+                src={movie.backgroundImage || movie.posterUrl || "/api/placeholder/150/225"} 
+                alt={movie.movie_name || movie.title} 
+                className="w-full h-auto mb-2" 
+              />
+              <h3 className="text-center">{movie.movie_name || movie.title}</h3>
             </div>
           ))}
         </div>
       </div>
+
+
+    <Footer />
     </div>
   );
 };

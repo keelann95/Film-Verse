@@ -79,12 +79,12 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower, suggestedUsers }) => 
         list.map((person) => (
           <div
             key={person.id}
-            className="flex items-center justify-between bg-gray-700/50 p-3 rounded-lg"
+            className="flex items-center justify-between bg-gray-700 p-3 rounded-lg"
           >
             <div className="flex items-center gap-3">
               <img
                 src={
-                  person.profile_picture ||
+                  person.Profile_picture ||
                   "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3"
                 }
                 alt={person.username}
@@ -102,12 +102,15 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower, suggestedUsers }) => 
               </button>
             ) : (
               <button
-                onClick={() => handleUnfollow(person.id)}
-                className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition-colors"
-              >
-                <UserMinus size={16} />
-                Unfollow
-              </button>
+              onClick={() => {
+                handleUnfollow(person.id);
+                window.location.reload(); // Refreshes the page
+              }}
+              className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition-colors"
+            >
+              <UserMinus size={16} />
+              Unfollow
+            </button>
             )}
           </div>
         ))
@@ -135,7 +138,7 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower, suggestedUsers }) => 
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
           <img
-            src={user.profile_picture || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3"}
+            src={user.Profile_picture || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3"}
             alt="Profile"
             className="w-16 h-16 rounded-full object-cover"
           />
@@ -148,7 +151,7 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower, suggestedUsers }) => 
             </div>
           </div>
         </div>
-        <div>
+        <div className='  space-x-6'>
           <button
             onClick={() => {
               setViewType('followers');
@@ -172,8 +175,8 @@ const ProfileCard = ({ user, onUnfollow, onRemoveFollower, suggestedUsers }) => 
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50">
-          <div className="bg-gray-800 p-6 rounded-lg w-96 max-w-full">
+        <div className=" inset-0 relative flex items-center justify-center bg-gray-900 bg-opacity-75 z-50">
+          <div className="bg-zinc-950  p-6 rounded-lg w-96 max-w-full">
             <h3 className="text-white font-bold text-lg">{viewType === 'followers' ? 'Followers' : 'Following'}</h3>
 
             <div className="mt-4">

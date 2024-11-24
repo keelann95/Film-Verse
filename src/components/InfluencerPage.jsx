@@ -5,6 +5,7 @@ import PostCard from './PostCard';
 import UserCarousel from './UserCarousel';
 import UsersModal from './UserModal';
 import { useNavigate } from 'react-router-dom';
+import Navbar from './Navbar';
 
 const InfluencerPage = () => {
   const [suggestedUsers, setSuggestedUsers] = useState([]);
@@ -154,10 +155,27 @@ const InfluencerPage = () => {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
-      <div className="container mx-auto px-4 py-6 sm:py-8 max-w-6xl">
+        <div
+        className="relative h-[300px] bg-cover bg-center"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80')`,
+        }}
+      >
+          <div className="w-full absolute z-50">
+            <Navbar />
+          </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-[#0a0a0a]"></div>
+        <div className="relative container mx-auto px-4 py-16">
+          <h1 className="text-4xl font-bold mb-3 text-white">Movie Influencer Hub</h1>
+          <p className="text-lg text-gray-300">Connect with movie enthusiasts and share your passion</p>
+        </div>
+      </div>
+
+      <div className="container  mx-auto px-4 py-6 sm:py-8 max-w-6xl">
         {loggedInUser && (
           <ProfileCard 
             user={loggedInUser}
+            
             onFollowersClick={() => setModalView('followers')}
             onFollowingClick={() => setModalView('following')}
           />
