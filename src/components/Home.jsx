@@ -266,10 +266,9 @@ const Home = () => {
 
   
  const handleMovieClick = (movie) => {
-    // Update to use the movie's ID for navigation
     const movieId = movie.id || movie.movie_id;
     if (movieId) {
-      navigate(`/movie/${movieId}`);
+      navigate(`/movie/:id`);
     } else {
       console.error('Movie ID not found:', movie);
     }
