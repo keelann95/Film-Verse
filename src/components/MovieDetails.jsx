@@ -112,7 +112,6 @@ const MovieDetails = () => {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      {/* Hero Section */}
       
       <div 
         className="relative h-[70vh] w-full"

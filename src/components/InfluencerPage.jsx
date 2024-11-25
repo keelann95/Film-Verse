@@ -16,7 +16,7 @@ const InfluencerPage = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [carouselIndex, setCarouselIndex] = useState(0);
-  const [modalView, setModalView] = useState(null); // 'followers' or 'following' or null
+  const [modalView, setModalView] = useState(null); 
   const navigate = useNavigate();
 
   const API_BASE_URL = 'https://film-verse-backend.onrender.com';
